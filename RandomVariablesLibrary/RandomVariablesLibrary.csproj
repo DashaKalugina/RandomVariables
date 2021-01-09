@@ -48,6 +48,8 @@
     <Compile Include="Distributions\NormalDistribution.cs" />
     <Compile Include="Distributions\UniformDistribution.cs" />
     <Compile Include="Generators\IRandomNumberGenerator.cs" />
+    <Compile Include="Generators\NormalGenerator.cs" />
+    <Compile Include="Generators\NormalRandom.cs" />
     <Compile Include="Generators\UniformGenerator.cs" />
     <Compile Include="NumericalCharacteristicsCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

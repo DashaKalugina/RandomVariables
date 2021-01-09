@@ -11,6 +11,9 @@ namespace RandomVariables
     /// </summary>
     public class UniformDistribution : DistributionBase
     {
+        public double A { get; set; }
+        public double B { get; set; }
+
         public override Func<double, double> ProbabilityFunction
         {
             get => (x) =>
@@ -39,14 +42,16 @@ namespace RandomVariables
             };
         }
 
-        public double A { get; set; }
-        public double B { get; set; }
+        public override double GetNewRandomValue()
+        {
+            return UniformGenerator.Next(A, B);
+        }
 
         //public UniformGenerator uniformGenerator
         //{
         //    get => new UniformGenerator(a, b);
         //}
 
-        public override IRandomNumberGenerator RandomNumberGenerator => new UniformGenerator(A, B);
+        //public override IRandomNumberGenerator RandomNumberGenerator => UniformGenerator.Next(A, B);
     }
 }

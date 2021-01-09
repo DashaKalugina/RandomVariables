@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace RandomVariables
 {
-    public interface IRandomNumberGenerator
-    {
-        double Mean { get; }
-        double Variance { get; }
-        double Next();
-        //void SetSeed(int seed);
-    }
+    //public interface IRandomNumberGenerator
+    //{
+    //    //double Mean { get; }
+    //    //double Variance { get; }
+    //    double Next();
+    //    //void SetSeed(int seed);
+    //}
 }

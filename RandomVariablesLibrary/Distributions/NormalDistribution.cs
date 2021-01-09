@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RandomVariablesLibrary.Generators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,9 @@ namespace RandomVariables
     /// </summary>
     public class NormalDistribution : DistributionBase
     {
+        public double Mu { get; set; }
+        public double Sigma { get; set; }
+
         public override Func<double, double> ProbabilityFunction
         {
             get => (x) =>
@@ -18,6 +22,16 @@ namespace RandomVariables
                 return Math.Pow(Sigma * Math.Pow(2 * Math.PI, 0.5), -1) *
                 Math.Pow(Math.E, (-1) * Math.Pow(x - Mu, 2) / (2 * Math.Pow(Sigma, 2)));
             };
+        }
+
+        public override Func<double, double> DistributionFunction 
+        { 
+            get => base.DistributionFunction;
+        }
+
+        public override double GetNewRandomValue()
+        {
+            return NormalGenerator.Next(Mu, Sigma);
         }
 
         //public override Func<double, double> DistributionFunction
@@ -28,8 +42,9 @@ namespace RandomVariables
         //    };
         //}
 
-        public double Mu { get; set; }
-        public double Sigma { get; set; }
-        public override IRandomNumberGenerator RandomNumberGenerator => throw new NotImplementedException();
+        
+
+        
+        //public override IRandomNumberGenerator RandomNumberGenerator => new NormalGenerator(Mu, Sigma);
     }
 }

@@ -25,7 +25,9 @@ namespace RandomVariables
         /// <summary>
         /// Генератор значений СВ
         /// </summary>
-        public abstract IRandomNumberGenerator RandomNumberGenerator { get; }
+        //public abstract IRandomNumberGenerator RandomNumberGenerator { get; }
+
+        public abstract double GetNewRandomValue();
 
         /// <summary>
         /// Генерирует заданное число значений СВ
@@ -38,7 +40,7 @@ namespace RandomVariables
             for (int i = 0; i < N; i++)
             {
                 //Thread.Sleep(10);
-                randomVariableValues.Add(RandomNumberGenerator.Next());
+                randomVariableValues.Add(GetNewRandomValue());
             }
             randomVariableValues.Sort();
             return randomVariableValues.ToArray();
