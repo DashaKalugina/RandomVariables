@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomVariables", "RandomVariables.csproj", "{319AD091-CD69-416F-B9D8-CCECBC7196CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomVariablesLibrary", "..\RandomVariablesLibrary\RandomVariablesLibrary.csproj", "{4AB868AF-6CAD-4739-A78C-2ED4D0C46AE7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{319AD091-CD69-416F-B9D8-CCECBC7196CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{319AD091-CD69-416F-B9D8-CCECBC7196CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{319AD091-CD69-416F-B9D8-CCECBC7196CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{319AD091-CD69-416F-B9D8-CCECBC7196CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AB868AF-6CAD-4739-A78C-2ED4D0C46AE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AB868AF-6CAD-4739-A78C-2ED4D0C46AE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AB868AF-6CAD-4739-A78C-2ED4D0C46AE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AB868AF-6CAD-4739-A78C-2ED4D0C46AE7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A08517A-826C-41FA-A21E-F01FFFE7BAB3}
+	EndGlobalSection
+EndGlobal
