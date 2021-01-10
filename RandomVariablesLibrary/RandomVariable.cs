@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RandomVariables
 {
     public class RandomVariable
     {
         public DistributionBase _distribution;
-        //private RandomVariableRange _variableRange;
 
         private double[] _variableValues;
         private double[] _probabilityValues;
 
-        private const int N = 1000;
+        private const int N = 100000;
+        private const int n = 1000;
 
         public double[] GetVariableValues() => _variableValues;
         public double[] GetProbabilityValues() => _probabilityValues;
@@ -22,42 +20,43 @@ namespace RandomVariables
         public RandomVariable(DistributionBase distribution)
         {
             _distribution = distribution;
-            //_variableRange = variableRange;
 
             CalculateVariableAndProbabilityValues();
         }
 
         public void CalculateVariableAndProbabilityValues()
         {
-            //var count = (long)((_variableRange.To - _variableRange.From) / _variableRange.H);
-            //_variableValues = new double[count];
-            //_probabilityValues = new double[count];
+            var counts = new int[n+1];
+            var variableValues = _distribution.GenerateRandomVariableValues(N);
+            
+            _probabilityValues = new double[n+1];
+            _variableValues = new double[n+1];
+            
+            var min = variableValues.Min();
+            var max = variableValues.Max();
+            var intervalLength = (max - min) / n;
 
-            //for(int i=0; i<count; i++)
-            //{
-            //    var x = _variableRange.From + i * _variableRange.H;
-            //    _variableValues[i] = x;
-            //    _probabilityValues[i] = _distribution.ProbabilityFunction(x);
-            //}
-
-            _variableValues = _distribution.GenerateRandomVariableValues(N);
-            _probabilityValues = new double[N];
-
-            //var list = _variableValues.ToList();
-            //list.Sort();
-            //_variableValues = list.ToArray();
-
-            for (int i=0; i<N-1; i++)
+            foreach (var value in variableValues)
             {
-                var Fx1 = _distribution.DistributionFunction(_variableValues[i]);
-                var Fx2 = _distribution.DistributionFunction(_variableValues[i + 1]);
-                _probabilityValues[i] = Fx2 - Fx1;
+                var index = (int) ((value - min) / intervalLength);
+
+                counts[index]++;
+
+                if (_variableValues[index] == 0)
+                {
+                    _variableValues[index] = min + index * intervalLength;
+                }
             }
-            _probabilityValues[N - 1] = 1 - _probabilityValues.Sum();
-
-            if (_probabilityValues.Sum() != 1)
+            
+            for (int i=0; i<_probabilityValues.Length; i++)
             {
-                throw new Exception("Сумма вероятностей не может быть больше единицы!");
+                _probabilityValues[i] = (double)counts[i] / N;
+            }
+
+            var probabilitiesSum = _probabilityValues.Sum();
+            if (Math.Abs(1 - probabilitiesSum) > Math.Pow(10,-6))
+            {
+                throw new Exception("Сумма вероятностей должна быть равна единице!");
             }
         }
 

@@ -1,9 +1,5 @@
 ﻿using RandomVariablesLibrary.Generators;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RandomVariables
 {
@@ -24,27 +20,9 @@ namespace RandomVariables
             };
         }
 
-        public override Func<double, double> DistributionFunction 
-        { 
-            get => base.DistributionFunction;
-        }
-
         public override double GetNewRandomValue()
         {
             return NormalGenerator.Next(Mu, Sigma);
         }
-
-        //public override Func<double, double> DistributionFunction
-        //{
-        //    get => (x) =>
-        //    {
-
-        //    };
-        //}
-
-        
-
-        
-        //public override IRandomNumberGenerator RandomNumberGenerator => new NormalGenerator(Mu, Sigma);
     }
 }

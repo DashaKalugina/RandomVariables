@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RandomVariables
 {
@@ -46,12 +42,5 @@ namespace RandomVariables
         {
             return UniformGenerator.Next(A, B);
         }
-
-        //public UniformGenerator uniformGenerator
-        //{
-        //    get => new UniformGenerator(a, b);
-        //}
-
-        //public override IRandomNumberGenerator RandomNumberGenerator => UniformGenerator.Next(A, B);
     }
 }

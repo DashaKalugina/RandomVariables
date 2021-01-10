@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace RandomVariables
 {
@@ -45,16 +41,5 @@ namespace RandomVariables
             randomVariableValues.Sort();
             return randomVariableValues.ToArray();
         }
-
-        //public double[] GenerateRandomVariableValues(int N)
-        //{
-        //    var randomVariableValues = new double[N];
-        //    for (int i=0; i<N; i++)
-        //    {
-        //        //Thread.Sleep(10);
-        //        randomVariableValues[i] = RandomNumberGenerator.Next();
-        //    }
-        //    return randomVariableValues;
-        //}
     }
 }

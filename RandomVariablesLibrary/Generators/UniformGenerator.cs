@@ -1,9 +1,4 @@
-﻿using RandomVariablesLibrary.Generators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace RandomVariables
 {
@@ -15,9 +10,6 @@ namespace RandomVariables
         //public double Mean => (_a + _b) / 2;
 
         //public double Variance => Math.Pow(_b - _a, 2) / 12;
-
-        //private IEnumerable<int> seeds = Enumerable.Range(1, 1000);
-        //private static int count = 0;
 
         private static readonly Random _random = new Random();
 
