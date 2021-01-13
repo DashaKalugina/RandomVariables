@@ -46,16 +46,59 @@ namespace RandomVariables
             var dataPoints2 = new List<DataPoint>();
             for (int i = 0; i < variableValues2.Length; i++)
             {
+				// правильно отображается
                 dataPoints2.Add(new DataPoint(variableValues2[i], normalVariable._distribution.ProbabilityFunction(variableValues2[i])));
-                //dataPoints2.Add(new DataPoint(variableValues2[i], probabilityValues2[i]));
-            }
+
+				//dataPoints2.Add(new DataPoint(variableValues2[i], probabilityValues2[i]));
+
+				// доработать в этом направлении
+				//var probValue = i > 0 && i < variableValues2.Length - 1 && probabilityValues2[i] != 0
+				//	? probabilityValues2[i] / (variableValues2[i + 1] - variableValues2[i])
+				//	: probabilityValues2[i];
+				//dataPoints2.Add(new DataPoint(variableValues2[i], probValue));
+			}
 
             var series2 = new Series();
             dataPoints2.ForEach(x => series2.Points.Add(x));
 
             var chart2 = MakeChart(series2, "Х", "f(x)", "График функции плотности нормального распределения");
 
-            var forms = MakeFormsFromCharts(new List<Chart> { chart1, chart2 });
+			////////////////////////
+
+
+			var a1 = 0.0;
+			var b1 = 1.0;
+			var var1 = new RandomVariable(new UniformDistribution { A = a1, B = b1 });
+
+			var a2 = 0.0;
+			var b2 = 1.0;
+			var var2 = new RandomVariable(new UniformDistribution { A = a2, B = b2 });
+
+			var var3 = var1 + var1;
+			var var3Values = var3.GetVariableValues();
+			var var3Probs = var3.GetProbabilityValues();
+
+			var dataPoints3 = new List<DataPoint>();
+			for (int i = 0; i < var3Values.Length; i++)
+			{
+
+				//dataPoints3.Add(new DataPoint(var3Values[i], var3Probs[i]));
+
+                // доработать в этом направлении
+                var probValue = i > 0 && i < var3Values.Length - 1 && var3Probs[i] != 0
+                    ? var3Probs[i] / (var3Values[i + 1] - var3Values[i])
+                    : var3Probs[i];
+                dataPoints3.Add(new DataPoint(var3Values[i], probValue));
+            }
+
+			var series3 = new Series();
+			dataPoints3.ForEach(x => series3.Points.Add(x));
+
+			var chart3 = MakeChart(series3, "Х", "f(x)", "График суммы равномерных от 1 до 2");
+
+
+			////////////////////////////////////////////////////////////
+			var forms = MakeFormsFromCharts(new List<Chart> { chart1, chart2, chart3 });
 
 			Application.EnableVisualStyles();
 			Application.Run(new MultiFormContext(forms.ToArray()));
@@ -79,7 +122,8 @@ namespace RandomVariables
 			chart.ChartAreas.Add(new ChartArea());
 
 			//series.ChartType = SeriesChartType.FastLine;
-			series.ChartType = SeriesChartType.Column;
+			//series.ChartType = SeriesChartType.Column;
+			series.ChartType = SeriesChartType.Point;
 			series.Color = Color.Green;
 			series.BorderWidth = 3;
 
@@ -91,7 +135,7 @@ namespace RandomVariables
 			Axis ay = new Axis();
 			ay.Title = axisYTitle;
 			chart.ChartAreas[0].AxisY = ay;
-			chart.ChartAreas[0].AxisX.Interval = 25;
+			//chart.ChartAreas[0].AxisX.Interval = 25;
 			//chart.ChartAreas[0].AxisX.Minimum = 0;
 			chart.Titles.Add(chartTitle);
 			return chart;

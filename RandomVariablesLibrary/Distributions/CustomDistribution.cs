@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace RandomVariables
 {
-    class CustomDistribution
+    public class CustomDistribution
     {
+
     }
 }
