@@ -37,21 +37,22 @@ namespace RandomVariables
             //////////////////////////
 
 
-            //var a1 = 0.0;
-            //var b1 = 1.0;
-            //var var1 = new RandomVariable(new UniformDistribution { A = a1, B = b1 });
+            var a1 = 0.0;
+            var b1 = 1.0;
+            var var1 = new RandomVariable(new UniformDistribution { A = a1, B = b1 });
 
-            //var a2 = 0.0;
-            //var b2 = 1.0;
-            //var var2 = new RandomVariable(new UniformDistribution { A = a2, B = b2 });
+            var a2 = 0.0;
+            var b2 = 1.0;
+            var var2 = new RandomVariable(new UniformDistribution { A = a2, B = b2 });
 
             //var var3 = var1 + var1;
             //var var3Values = var3.GetVariableValues();
             //var var3Probs = var3.GetProbabilityValues();
 
-            var var3 = new RandomVariable(new ExponentialDistribution { Lambda = 0.5 });
+            //var var3 = new RandomVariable(new ExponentialDistribution { Lambda = 0.5 });
+            var var3 = var1 + var2;
             var series3 = MakeSeries(var3);
-            var chart3 = MakeChart(series3, "Х", "f(x)", "График суммы равномерных от 1 до 2");
+            var chart3 = MakeChart(series3, "Х", "f(x)", "График суммы равномерных от 0 до 1");
             Console.WriteLine(var3.SummaryInfo);
 
             ////////////////////////////////////////////////////////////
@@ -63,43 +64,14 @@ namespace RandomVariables
 			Console.ReadKey();
 		}
 
-        // работает
-        //private static Series MakeSeries(RandomVariable randomVariable)
-        //{
-        //    var variableValues = randomVariable.GetVariableValues();
-        //    var probabilities = randomVariable.GetProbabilityValues();
-
-        //    var dataPoints = new List<DataPoint>();
-
-        //    for (int i = 0; i < variableValues.Length; i++)
-        //    {
-
-        //        //dataPoints3.Add(new DataPoint(var3Values[i], var3Probs[i]));
-
-        //        // доработать в этом направлении
-        //        var probValue = i > 0 && i < variableValues.Length - 1 && probabilities[i] != 0
-        //            ? probabilities[i] / (variableValues[i + 1] - variableValues[i])
-        //            : probabilities[i];
-        //        dataPoints.Add(new DataPoint(variableValues[i], probValue));
-        //    }
-
-        //    var series = new Series();
-        //    dataPoints.ForEach(x => series.Points.Add(x));
-
-        //    return series;
-        //}
-
         private static Series MakeSeries(RandomVariable randomVariable)
         {
-            var probabilities = randomVariable.DistributionFunctionValues;
+            var probabilities = randomVariable.ProbabilityFunctionValues;
 
             var dataPoints = new List<DataPoint>();
 
             for (int i = 0; i < probabilities.Length; i++)
             {
-
-                //dataPoints3.Add(new DataPoint(var3Values[i], var3Probs[i]));
-
                 dataPoints.Add(new DataPoint(probabilities[i].X, probabilities[i].Y));
             }
 
