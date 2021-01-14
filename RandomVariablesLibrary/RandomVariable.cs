@@ -251,7 +251,7 @@ namespace RandomVariables
         /// </summary>
         public double Mean
         {
-            get => NumericalCharacteristicsCalculator.GetMeanValue(_variableValues, _probabilityValues);
+            get => NumericalCharacteristicsCalculator.GetMeanValue(Probabilities);
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace RandomVariables
         /// </summary>
         public double Variance
         {
-            get => NumericalCharacteristicsCalculator.GetVariance(_variableValues, _probabilityValues);
+            get => NumericalCharacteristicsCalculator.GetVariance(Probabilities);
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace RandomVariables
         /// </summary>
         public double StandardDeviation
         {
-            get => NumericalCharacteristicsCalculator.GetStandardDeviation(_variableValues, _probabilityValues);
+            get => NumericalCharacteristicsCalculator.GetStandardDeviation(Probabilities);
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace RandomVariables
         /// </summary>
         public double Skewness
         {
-            get => NumericalCharacteristicsCalculator.GetSkewness(_variableValues, _probabilityValues);
+            get => NumericalCharacteristicsCalculator.GetSkewness(Probabilities);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace RandomVariables
         /// </summary>
         public double Kurtosis
         {
-            get => NumericalCharacteristicsCalculator.GetKurtosis(_variableValues, _probabilityValues);
+            get => NumericalCharacteristicsCalculator.GetKurtosis(Probabilities);
         }
 
         public string SummaryInfo

@@ -14,12 +14,12 @@ namespace RandomVariables
         /// <param name="variableValues"></param>
         /// <param name="probabilityValues"></param>
         /// <returns></returns>
-        public static double GetMeanValue(double[] variableValues, double[] probabilityValues)
+        public static double GetMeanValue(Point[] probabilities)
         {
             double meanValue = default;
-            for (int i = 0; i < variableValues.Length; i++)
+            foreach (var value in probabilities)
             {
-                meanValue += variableValues[i] * probabilityValues[i];
+                meanValue += value.X * value.Y;
             }
             return meanValue;
         }
@@ -30,13 +30,14 @@ namespace RandomVariables
         /// <param name="variableValues"></param>
         /// <param name="probabilityValues"></param>
         /// <returns></returns>
-        public static double GetVariance(double[] variableValues, double[] probabilityValues)
+        public static double GetVariance(Point[] probabilities)
         {
-            var meanValue = GetMeanValue(variableValues, probabilityValues);
+            var meanValue = GetMeanValue(probabilities);
+
             double variance = default;
-            for (int i = 0; i < variableValues.Length; i++)
+            foreach (var value in probabilities)
             {
-                variance += probabilityValues[i] * Math.Pow((variableValues[i] - meanValue), 2);
+                variance += value.Y * Math.Pow((value.X - meanValue), 2);
             }
 
             //return variance / (variableValues.Length - 1);
@@ -49,9 +50,9 @@ namespace RandomVariables
         /// <param name="variableValues"></param>
         /// <param name="probabilityValues"></param>
         /// <returns></returns>
-        public static double GetStandardDeviation(double[] variableValues, double[] probabilityValues)
+        public static double GetStandardDeviation(Point[] probabilities)
         {
-            var standardDeviation = Math.Pow(GetVariance(variableValues, probabilityValues), 0.5);
+            var standardDeviation = Math.Pow(GetVariance(probabilities), 0.5);
             return standardDeviation;
         }
 
@@ -61,10 +62,10 @@ namespace RandomVariables
         /// <param name="variableValues"></param>
         /// <param name="probabilityValues"></param>
         /// <returns></returns>
-        public static double GetSkewness(double[] variableValues, double[] probabilityValues)
+        public static double GetSkewness(Point[] probabilities)
         {
-            var standardDeviation = GetStandardDeviation(variableValues, probabilityValues);
-            var skewness = GetCentralMoment(3, variableValues, probabilityValues) / Math.Pow(standardDeviation, 3);
+            var standardDeviation = GetStandardDeviation(probabilities);
+            var skewness = GetCentralMoment(3, probabilities) / Math.Pow(standardDeviation, 3);
 
             return skewness;
         }
@@ -75,10 +76,10 @@ namespace RandomVariables
         /// <param name="variableValues"></param>
         /// <param name="probabilityValues"></param>
         /// <returns></returns>
-        public static double GetKurtosis(double[] variableValues, double[] probabilityValues)
+        public static double GetKurtosis(Point[] probabilities)
         {
-            var standardDeviation = GetStandardDeviation(variableValues, probabilityValues);
-            var skewness = GetCentralMoment(4, variableValues, probabilityValues) / Math.Pow(standardDeviation, 4) - 3;
+            var standardDeviation = GetStandardDeviation(probabilities);
+            var skewness = GetCentralMoment(4, probabilities) / Math.Pow(standardDeviation, 4) - 3;
 
             return skewness;
         }
@@ -90,15 +91,16 @@ namespace RandomVariables
         /// <param name="variableValues"></param>
         /// <param name="probabilityValues"></param>
         /// <returns></returns>
-        public static double GetCentralMoment(int q, double[] variableValues, double[] probabilityValues)
+        public static double GetCentralMoment(int q, Point[] probabilities)
         {
             double centralMoment = default;
-            var meanValue = GetMeanValue(variableValues, probabilityValues);
+            var meanValue = GetMeanValue(probabilities);
 
-            for (int i=0; i<variableValues.Length; i++)
+            foreach (var value in probabilities)
             {
-                centralMoment += Math.Pow(variableValues[i] - meanValue, q) * probabilityValues[i];
+                centralMoment += Math.Pow(value.X - meanValue, q) * value.Y;
             }
+
             return centralMoment;
         }
     }
