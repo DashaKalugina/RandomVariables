@@ -44,14 +44,17 @@
     <Compile Include="ChiSquareTest.cs" />
     <Compile Include="Distributions\CustomDistribution.cs" />
     <Compile Include="Distributions\DistributionBase.cs" />
+    <Compile Include="Distributions\ExponentialDistribution.cs" />
     <Compile Include="Distributions\IDistribution.cs" />
     <Compile Include="Distributions\NormalDistribution.cs" />
     <Compile Include="Distributions\UniformDistribution.cs" />
+    <Compile Include="Generators\ExponentialGenerator.cs" />
     <Compile Include="Generators\IRandomNumberGenerator.cs" />
     <Compile Include="Generators\NormalGenerator.cs" />
     <Compile Include="Generators\NormalRandom.cs" />
     <Compile Include="Generators\UniformGenerator.cs" />
     <Compile Include="NumericalCharacteristicsCalculator.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomVariable.cs" />
     <Compile Include="RandomVariableRange.cs" />

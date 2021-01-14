@@ -12,7 +12,13 @@ namespace RandomVariables
         private double[] _variableValues;
         private double[] _probabilityValues;
 
-        private const int N = 10000;
+        public Point[] Probabilities { get; private set; }
+
+        public Point[] ProbabilityFunctionValues { get; private set; }
+
+        public Point[] DistributionFunctionValues { get; private set; }
+
+        private const int N = 100000;
         private const int n = 1000;
 
         public double[] GetVariableValues() => _variableValues;
@@ -32,7 +38,9 @@ namespace RandomVariables
         {
             _distribution = distribution;
 
-            CalculateVariableAndProbabilityValues();
+            CalculateProbabilities();
+            CalculateDistributionFunctionValues();
+            CalculateProbabilityFunctionValues();
         }
 
         public RandomVariable(CustomDistribution customDistribution)
@@ -40,39 +48,122 @@ namespace RandomVariables
 
         }
 
-        private void CalculateVariableAndProbabilityValues()
+        //private void CalculateVariableAndProbabilityValues()
+        //{
+        //    var counts = new int[n+1];
+        //    var variableValues = _distribution.GenerateRandomVariableValues(N);
+
+        //    _probabilityValues = new double[n+1];
+        //    _variableValues = new double[n+1];
+
+        //    var min = variableValues.Min();
+        //    var max = variableValues.Max();
+        //    var intervalLength = (max - min) / n;
+
+        //    foreach (var value in variableValues)
+        //    {
+        //        var index = (int) ((value - min) / intervalLength);
+
+        //        counts[index]++;
+
+        //        if (_variableValues[index] == 0)
+        //        {
+        //            _variableValues[index] = min + index * intervalLength;
+        //        }
+        //    }
+
+        //    for (int i=0; i<_probabilityValues.Length; i++)
+        //    {
+        //        _probabilityValues[i] = (double)counts[i] / N;
+        //    }
+
+        //    var probabilitiesSum = _probabilityValues.Sum();
+        //    if (Math.Abs(1 - probabilitiesSum) > Math.Pow(10,-6))
+        //    {
+        //        throw new Exception("Сумма вероятностей должна быть равна единице!");
+        //    }
+        //}
+
+        private void CalculateProbabilities()
         {
-            var counts = new int[n+1];
+            //var counts = new int[n + 1];
+            
+
+            _probabilityValues = new double[n + 1];
+            _variableValues = new double[n + 1];
+
+            Probabilities = new Point[n + 1];
+
             var variableValues = _distribution.GenerateRandomVariableValues(N);
-            
-            _probabilityValues = new double[n+1];
-            _variableValues = new double[n+1];
-            
             var min = variableValues.Min();
             var max = variableValues.Max();
             var intervalLength = (max - min) / n;
 
+            var counts = new int[n + 1];
             foreach (var value in variableValues)
             {
-                var index = (int) ((value - min) / intervalLength);
+                var index = (int)((value - min) / intervalLength);
 
                 counts[index]++;
-
-                if (_variableValues[index] == 0)
-                {
-                    _variableValues[index] = min + index * intervalLength;
-                }
             }
-            
-            for (int i=0; i<_probabilityValues.Length; i++)
+
+            // убрать
+            for (int i = 0; i < _probabilityValues.Length; i++)
             {
                 _probabilityValues[i] = (double)counts[i] / N;
+                if (_variableValues[i] == default)
+                {
+                    _variableValues[i] = min + i * intervalLength;
+                }
             }
 
-            var probabilitiesSum = _probabilityValues.Sum();
-            if (Math.Abs(1 - probabilitiesSum) > Math.Pow(10,-6))
+            for (int i = 0; i < Probabilities.Length; i++)
+            {
+                var variableValue = min + i * intervalLength;
+                var probability = (double)counts[i] / N;
+
+                Probabilities[i] = new Point(variableValue, probability);
+            }
+
+            //var probabilitiesSum = _probabilityValues.Sum();
+            var probabilitiesSum = Probabilities.Select(p => p.Y).Sum();
+            if (Math.Abs(1 - probabilitiesSum) > Math.Pow(10, -6))
             {
                 throw new Exception("Сумма вероятностей должна быть равна единице!");
+            }
+        }
+
+        private void CalculateProbabilityFunctionValues()
+        {
+            //var probValue = i > 0 && i < variableValues.Length - 1 && probabilities[i] != 0
+            //        ? probabilities[i] / (variableValues[i + 1] - variableValues[i])
+            //        : probabilities[i];
+
+            var length = n + 1;
+            ProbabilityFunctionValues = new Point[length];
+
+            for (var i = 0; i < length; i++)
+            {
+                var funcValue = i > 0 && i < length - 1 && Probabilities[i].Y != 0
+                    ? Probabilities[i].Y / (Probabilities[i + 1].X - Probabilities[i].X)
+                    : Probabilities[i].Y;
+                ProbabilityFunctionValues[i] = new Point(Probabilities[i].X, funcValue);
+            }
+        }
+
+        private void CalculateDistributionFunctionValues()
+        {
+            var length = n + 1;
+            DistributionFunctionValues = new Point[length];
+
+            var sum = 0.0;
+            for (var i = 0; i < length; i++)
+            {
+                var distributionFuncValue = i == 0 ? 0 : i == length - 1 ? 1 : sum;
+
+                DistributionFunctionValues[i] = new Point(Probabilities[i].X, distributionFuncValue);
+
+                sum += Probabilities[i].Y;
             }
         }
 
