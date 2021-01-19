@@ -100,6 +100,12 @@ namespace RandomVariables
             }
         }
 
+        /// <summary>
+        /// Перегрузка оператора сложения двух СВ
+        /// </summary>
+        /// <param name="variable1"></param>
+        /// <param name="variable2"></param>
+        /// <returns></returns>
         public static RandomVariable operator +(RandomVariable variable1, RandomVariable variable2)
         {
             var probabilities1 = variable1.Probabilities;
@@ -112,6 +118,66 @@ namespace RandomVariables
                 foreach(var prob2 in probabilities2)
                 {
                     var newValue = prob1.X + prob2.X;
+                    if (!newVariableValues.Contains(newValue))
+                    {
+                        newVariableValues.Add(newValue);
+                    }
+                }
+            }
+
+            var newVariable = new RandomVariable(new CustomDistribution(), newVariableValues.ToArray());
+
+            return newVariable;
+        }
+
+        /// <summary>
+        /// Перегрузка оператора умножения двух СВ
+        /// </summary>
+        /// <param name="variable1"></param>
+        /// <param name="variable2"></param>
+        /// <returns></returns>
+        public static RandomVariable operator *(RandomVariable variable1, RandomVariable variable2)
+        {
+            var probabilities1 = variable1.Probabilities;
+            var probabilities2 = variable2.Probabilities;
+
+            var newVariableValues = new HashSet<double>();
+
+            foreach (var prob1 in probabilities1)
+            {
+                foreach (var prob2 in probabilities2)
+                {
+                    var newValue = prob1.X * prob2.X;
+                    if (!newVariableValues.Contains(newValue))
+                    {
+                        newVariableValues.Add(newValue);
+                    }
+                }
+            }
+
+            var newVariable = new RandomVariable(new CustomDistribution(), newVariableValues.ToArray());
+
+            return newVariable;
+        }
+
+        /// <summary>
+        /// Перегрузка оператора вычитания двух СВ
+        /// </summary>
+        /// <param name="variable1"></param>
+        /// <param name="variable2"></param>
+        /// <returns></returns>
+        public static RandomVariable operator -(RandomVariable variable1, RandomVariable variable2)
+        {
+            var probabilities1 = variable1.Probabilities;
+            var probabilities2 = variable2.Probabilities;
+
+            var newVariableValues = new HashSet<double>();
+
+            foreach (var prob1 in probabilities1)
+            {
+                foreach (var prob2 in probabilities2)
+                {
+                    var newValue = prob1.X - prob2.X;
                     if (!newVariableValues.Contains(newValue))
                     {
                         newVariableValues.Add(newValue);
