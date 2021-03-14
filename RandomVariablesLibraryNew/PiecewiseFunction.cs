@@ -15,6 +15,11 @@ namespace RandomVariablesLibraryNew
     {
         public List<Segment> Segments { get; private set; }
 
+        public PiecewiseFunction()
+        {
+            Segments = new List<Segment>();
+        }
+
         #region Characteristics
 
         /// <summary>
@@ -36,17 +41,24 @@ namespace RandomVariablesLibraryNew
             }
         }
 
-        public double Integral(double a, double b, Func<double, double> function)
-        {
-            return default;
-        }
-
         /// <summary>
         /// Вычисляет дисперсию
         /// </summary>
         public double Variance
         {
-            get => default;
+            get
+            {
+                var mean = Mean;
+
+                double integralValue = default;
+                foreach (var segment in Segments)
+                {
+                    Func<double, double> integralFunc = (x) => Math.Pow(x - mean, 2) * segment[x];
+                    integralValue += Integral(segment.A, segment.B, integralFunc);
+                }
+
+                return integralValue;
+            }
         }
 
         /// <summary>
@@ -54,7 +66,7 @@ namespace RandomVariablesLibraryNew
         /// </summary>
         public double StandardDeviation
         {
-            get => default;
+            get => Math.Sqrt(Variance);
         }
 
         /// <summary>
@@ -62,7 +74,7 @@ namespace RandomVariablesLibraryNew
         /// </summary>
         public double Skewness
         {
-            get => default;
+            get => GetCentralMoment(3) / Math.Pow(StandardDeviation, 3);
         }
 
         /// <summary>
@@ -70,7 +82,21 @@ namespace RandomVariablesLibraryNew
         /// </summary>
         public double Kurtosis
         {
-            get => default;
+            get => GetCentralMoment(4) / Math.Pow(StandardDeviation, 4) - 3;
+        }
+
+        public double GetCentralMoment(int q)
+        {
+            var mean = Mean;
+
+            double centralMoment = default;
+            foreach (var segment in Segments)
+            {
+                Func<double, double> integralFunc = (x) => Math.Pow(x - mean, q) * segment[x];
+                centralMoment += Integral(segment.A, segment.B, integralFunc);
+            }
+
+            return centralMoment;
         }
 
         #endregion
@@ -96,6 +122,49 @@ namespace RandomVariablesLibraryNew
         public void AddSegment(Segment segment)
         {
             Segments.Add(segment);
+        }
+
+        /// <summary>
+        /// Вычисляет интеграл
+        /// </summary>
+        /// <param name="a">Начало отрезка интегрирования</param>
+        /// <param name="b">Конец отрезка интегрирования</param>
+        /// <param name="function">Подынтегральная функция</param>
+        /// <returns></returns>
+        public double Integral(double a, double b, Func<double, double> function)
+        {
+            var n = 6; // количество точек
+            var weights = new double[]
+            {
+                0.171324492,
+                0.360761573,
+                0.467913935,
+                0.467913935,
+                0.360761573,
+                0.171324492
+            };
+
+            var arguments = new double[]
+            {
+                -0.932469514,
+                -0.661209386,
+                -0.238619186,
+                0.238619186,
+                0.661209386,
+                0.932469514
+            };
+
+            double integralValue = default;
+
+            for (var i = 0; i < n; i++)
+            {
+                var transformedArg = (b + a) / 2 + ((b - a) / 2) * arguments[i];
+                integralValue += weights[i] * function(transformedArg);
+            }
+
+            integralValue = ((b - a) / 2) * integralValue;
+
+            return integralValue;
         }
     }
 }

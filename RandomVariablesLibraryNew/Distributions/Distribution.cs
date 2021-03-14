@@ -13,6 +13,14 @@ namespace RandomVariablesLibraryNew.Distributions
         /// </summary>
         public PiecewiseFunction PiecewisePDF;
 
-        
+        public double Mean => PiecewisePDF.Mean;
+
+        public double Variance => PiecewisePDF.Variance;
+
+        public double StandardDeviation => PiecewisePDF.StandardDeviation;
+
+        public double Skewness => PiecewisePDF.Skewness;
+
+        public double Kurtosis => PiecewisePDF.Kurtosis;
     }
 }
