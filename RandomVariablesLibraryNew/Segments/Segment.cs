@@ -21,6 +21,11 @@ namespace RandomVariablesLibraryNew.Segments
             ProbabilityFunction = probabilityFunction;
         }
 
+        /// <summary>
+        /// Возвращает значение функции плотности в данной точке сегмента
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public double this[double x]
         {
             get

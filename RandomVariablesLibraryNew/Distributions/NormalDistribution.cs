@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RandomVariablesLibraryNew.Segments;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,15 @@ namespace RandomVariablesLibraryNew.Distributions
         {
             Mu = mu;
             Sigma = sigma;
+
+            PiecewisePDF = new PiecewiseFunction();
+
+            var b1 = Mu - Sigma;
+            var b2 = Mu + Sigma;
+
+            PiecewisePDF.AddSegment(new MinusInfinitySegment(b1, ProbabilityFunction));
+            PiecewisePDF.AddSegment(new Segment(b1, b2, ProbabilityFunction));
+            PiecewisePDF.AddSegment(new PlusInfinitySegment(b2, ProbabilityFunction));
         }
     }
 }

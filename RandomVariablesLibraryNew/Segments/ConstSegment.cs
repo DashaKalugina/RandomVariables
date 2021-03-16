@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RandomVariablesLibraryNew.Segments
 {
-    public class ConstSegment: Segment
-    {
-    }
+    //public class ConstSegment: Segment
+    //{
+    //}
 }
