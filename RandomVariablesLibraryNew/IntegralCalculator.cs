@@ -1,103 +1,100 @@
-using NUnit.Framework;
-using RandomVariablesLibraryNew.Distributions;
-//using RandomVariablesLibrary.Distributions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-using System;
-
-namespace RandomVariables.Tests
+namespace RandomVariablesLibraryNew
 {
-    public class Tests
+    public static class IntegralCalculator
     {
-        [SetUp]
-        public void Setup()
+        /// <summary>
+        /// Вычисляет интеграл функции на заданном интервале.
+        /// </summary>
+        /// <param name="from">Начало интервала интегрирования</param>
+        /// <param name="to">Конец интервала интегрирования</param>
+        /// <param name="integrand">Подынтегральная функция</param>
+        /// <returns></returns>
+        public static double Integrate(double from, double to, Func<double, double> integrand)
         {
-        }
+            var integralValue = default(double);
 
-        [TestCase(0.0, 1.0)]
-        [TestCase(-1.0, 10.0)]
-        [TestCase(1, 5)]
-        [TestCase(-100.4, 76)]
-        [TestCase(-1728.5, -18.5)]
-        public void GenerateUniformVariableAndCheckCharacteristics(double a, double b)
-        {
-            var uniformDistributedVariable = new UniformDistribution(a, b);
+            // конечный интервал [a,b]
+            var isDefiniteIntegral = !double.IsInfinity(from) && !double.IsInfinity(to);
+            if (isDefiniteIntegral)
+            {
+                integralValue = IntegrateByGaussLegendreQuadrature(from, to, integrand);
+            }
 
-            var mean = (a + b) / 2; // мат. ожидание
-            var variance = Math.Pow(b - a, 2) / 12; // дисперсия
-            var standardDeviation = Math.Sqrt(variance); // СКО
-            var skewness = 0; // коэффициент асимметрии
-            var kurtosis = (double)(-1) * 6 / 5; // эксцесс
+            // интервал (-inf; b], [a; +inf) или (-inf; +inf).
+            if (double.IsInfinity(from) || double.IsInfinity(to))
+            {
+                integralValue = IntegrateWithVariableChange(from, to, integrand);
+            }
 
-            var delta = Math.Pow(10, -3);
-            Assert.AreEqual(mean, uniformDistributedVariable.Mean, delta);
-            Assert.AreEqual(variance, uniformDistributedVariable.Variance, delta);
-            Assert.AreEqual(standardDeviation, uniformDistributedVariable.StandardDeviation, delta);
-            Assert.AreEqual(skewness, uniformDistributedVariable.Skewness, delta);
-            Assert.AreEqual(kurtosis, uniformDistributedVariable.Kurtosis, delta);
-        }
-
-        [TestCase(0, 1)]
-        [TestCase(0, 0.8)]
-        [TestCase(1, 1)]
-        [TestCase(1, 0.2)]
-        [TestCase(-2, 0.5)]
-        public void GenerateNormalVariableAndCheckCharacteristics(double mu, double sigma)
-        {
-            var normalDistributedVariable = new NormalDistribution(mu, sigma);
-
-            var mean = mu; // мат. ожидание
-            var variance = Math.Pow(sigma, 2); // дисперсия
-            var standardDeviation = sigma; // СКО
-            var skewness = 0; // коэффициент асимметрии
-            var kurtosis = 0; // эксцесс
-
-            var delta = Math.Pow(10, -3);
-            Assert.AreEqual(mean, normalDistributedVariable.Mean, delta);
-            Assert.AreEqual(variance, normalDistributedVariable.Variance, delta);
-            Assert.AreEqual(standardDeviation, normalDistributedVariable.StandardDeviation, delta);
-            Assert.AreEqual(skewness, normalDistributedVariable.Skewness, delta);
-            Assert.AreEqual(kurtosis, normalDistributedVariable.Kurtosis, delta);
+            return integralValue;
         }
 
         /// <summary>
-        /// Тест вычисления несобственного интеграла к +inf.
-        /// Три случая: 1) [a, +inf) (a < 0); 2) [a, +inf) (a = 0); 3) [a, +inf) (a > 0); 
+        /// Вычисляет интеграл функции на заданном интервале с помощью замены переменной.
         /// </summary>
-        [Test]
-        public void ToPositiveInfinityIntegralTest()
+        /// <param name="from">Начало интервала интегрирования</param>
+        /// <param name="to">Конец интервала интегрирования</param>
+        /// <param name="integrand">Подынтегральная функция</param>
+        /// <returns></returns>
+        private static double IntegrateWithVariableChange(double from, double to, Func<double, double> integrand)
         {
-            var abs = Math.Pow(10, -4);
+            // Случай 1. Интеграл с бесконечным верхним пределом [a; +inf).
+            var isInfiniteUpperLimit = !double.IsInfinity(from) && double.IsPositiveInfinity(to);
+            if (isInfiniteUpperLimit)
+            {
+                return CalculateToPositiveInfinityIntegral(from, integrand);
+            }
 
-            Func<double, double> func1 = (x) => 1 / Math.Pow(x, 2);
-            var res1 = ToPositiveInfinityIntegral(1, double.PositiveInfinity, func1);
-            Assert.AreEqual(1.0, res1, abs);
+            // Случай 2. Интеграл с бесконечным нижним пределом (-inf; b].
+            // Меняем пределы интегрирования местами: (-inf; b] -> [-b, +inf).
+            // Подынтегральная функция f(x) заменяется на g(s), так что x=-s и g(s)=f(s).
+            var isInfiniteLowerLimit = double.IsNegativeInfinity(from) && !double.IsInfinity(to);
+            if (isInfiniteLowerLimit)
+            {
+                Func<double, double> newFunc = (x) => integrand(-x);
 
-            Func<double, double> func2 = (x) => x / (Math.Pow(x, 4) + 1);
-            var res2 = ToPositiveInfinityIntegral(0, double.PositiveInfinity, func2);
-            Assert.AreEqual(Math.PI/4, res2, abs);
+                var toPosInfIntegral = CalculateToPositiveInfinityIntegral((-1) * to, newFunc);
+                return toPosInfIntegral;
+            }
 
-            Func<double, double> func3 = (x) => 1 / (Math.Pow(x, 2) + 4 * x + 5);
-            var res3 = ToPositiveInfinityIntegral(-1, double.PositiveInfinity, func3);
-            Assert.AreEqual(Math.PI / 4, res3, abs);
+            // Случай 3. (-inf; +inf).
+
+            return default;
         }
 
-        public double ToPositiveInfinityIntegral(double a, double b, Func<double, double> function)
+        /// <summary>
+        /// Вычисляет интеграл с бесконечным верхним пределом [a; +inf).
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="integrand"></param>
+        /// <returns></returns>
+        private static double CalculateToPositiveInfinityIntegral(double from, Func<double, double> integrand)
         {
-            if (a < 0)
+            // Если a < 0, то разбиваем интеграл на два по интервалам [a; 0] и [0; +inf).
+            // Интеграл с пределами [0; +inf) вычисляется заменой переменной x = z / (1 - z) + 0,
+            // причем после замены интеграл имеет пределы [0; 1].
+            if (from < 0)
             {
-                Func<double, double> newFunc = (z) => function(z / (1 - z)) / Math.Pow(1 - z, 2);
-                return GaussLegendreIntegral(a, 0, function) + GaussLegendreIntegral(0, 1, newFunc);
+                var funcAfterVariableChange = GetIntegrandAfterVariableChange(0, integrand);
+                return IntegrateByGaussLegendreQuadrature(from, 0, integrand) + IntegrateByGaussLegendreQuadrature(0, 1, funcAfterVariableChange);
             }
-            else if (a == 0)
+            else // from >= 0
             {
-                Func<double, double> newFunc = (z) => function(z / (1 - z)) / Math.Pow(1 - z, 2);
-                return GaussLegendreIntegral(0, 1, newFunc);
+                // Если a >= 0, то делаем замену переменной x = z / (1 - z) + a;
+                var funcAfterVariableChange = GetIntegrandAfterVariableChange(from, integrand);
+                return IntegrateByGaussLegendreQuadrature(0, 1, funcAfterVariableChange);
             }
-            else // if (a > 0)
-            {
-                Func<double, double> newFunc = (z) => function((z / (1 - z)) + a) / Math.Pow(1 - z, 2);
-                return GaussLegendreIntegral(0, 1, newFunc);
-            }
+        }
+
+        private static Func<double, double> GetIntegrandAfterVariableChange(double from, Func<double, double> integrand)
+        {
+            return (z) => integrand((z / (1 - z)) + from) / Math.Pow(1 - z, 2);
         }
 
         /// <summary>
@@ -107,7 +104,7 @@ namespace RandomVariables.Tests
         /// <param name="b">Конец отрезка интегрирования</param>
         /// <param name="function">Подынтегральная функция</param>
         /// <returns></returns>
-        public double GaussLegendreIntegral(double a, double b, Func<double, double> function)
+        private static double IntegrateByGaussLegendreQuadrature(double a, double b, Func<double, double> function)
         {
             var n = 16; // количество точек
             var weights = new double[]
@@ -162,26 +159,5 @@ namespace RandomVariables.Tests
 
             return integralValue;
         }
-
-        //[TestCase(0.5)]
-        //[TestCase(1.0)]
-        //[TestCase(1.5)]
-        //public void GenerateExponentialVariableAndCheckCharacteristics(double lambda)
-        //{
-        //    var exponentialVariable = new RandomVariable(new ExponentialDistribution { Lambda = lambda });
-
-        //    var mean = Math.Pow(lambda, -1); // мат. ожидание
-        //    var variance = Math.Pow(lambda, -2); // дисперсия
-        //    var standardDeviation = Math.Sqrt(variance); // СКО
-        //    var skewness = 2.0; // коэффициент асимметрии
-        //    var kurtosis = 6.0; // эксцесс
-
-        //    var delta = Math.Pow(10, -2);
-        //    Assert.AreEqual(mean, exponentialVariable.Mean, delta);
-        //    Assert.AreEqual(variance, exponentialVariable.Variance, delta);
-        //    Assert.AreEqual(standardDeviation, exponentialVariable.StandardDeviation, delta);
-        //    Assert.AreEqual(skewness, exponentialVariable.Skewness, delta);
-        //    Assert.AreEqual(kurtosis, exponentialVariable.Kurtosis, delta);
-        //}
     }
 }
