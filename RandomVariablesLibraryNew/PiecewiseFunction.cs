@@ -20,6 +20,30 @@ namespace RandomVariablesLibraryNew
             Segments = new List<Segment>();
         }
 
+        public void AddSegment(Segment segment)
+        {
+            Segments.Add(segment);
+        }
+
+        public List<BreakPoint> GetBreakPoints()
+        {
+            if (Segments.Count == 0)
+            {
+                return new List<BreakPoint>();
+            }
+
+            var breakPoints = new List<BreakPoint>();
+
+            breakPoints.Add(new BreakPoint(Segments[0].A, false, false));
+            foreach(var segment in Segments)
+            {
+                // сюда будет добавлена обработка полюсов и бесконечностей
+                breakPoints.Add(new BreakPoint(segment.B, false, false));
+            }
+
+            return breakPoints;
+        }
+
         #region Characteristics
 
         /// <summary>
@@ -117,9 +141,6 @@ namespace RandomVariablesLibraryNew
             }
         }
 
-        public void AddSegment(Segment segment)
-        {
-            Segments.Add(segment);
-        }
+        
     }
 }

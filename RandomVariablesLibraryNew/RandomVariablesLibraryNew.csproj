@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Distributions\Distribution.cs" />
+    <Compile Include="Distributions\ExponentialDistribution.cs" />
     <Compile Include="Distributions\NormalDistribution.cs" />
     <Compile Include="Distributions\UniformDistribution.cs" />
     <Compile Include="InfinityType.cs" />

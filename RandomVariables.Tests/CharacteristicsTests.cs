@@ -163,25 +163,25 @@ namespace RandomVariables.Tests
             return integralValue;
         }
 
-        //[TestCase(0.5)]
-        //[TestCase(1.0)]
-        //[TestCase(1.5)]
-        //public void GenerateExponentialVariableAndCheckCharacteristics(double lambda)
-        //{
-        //    var exponentialVariable = new RandomVariable(new ExponentialDistribution { Lambda = lambda });
+        [TestCase(0.5)]
+        [TestCase(1.0)]
+        [TestCase(1.5)]
+        public void GenerateExponentialVariableAndCheckCharacteristics(double lambda)
+        {
+            var exponentialVariable = new ExponentialDistribution(lambda);
 
-        //    var mean = Math.Pow(lambda, -1); // мат. ожидание
-        //    var variance = Math.Pow(lambda, -2); // дисперсия
-        //    var standardDeviation = Math.Sqrt(variance); // СКО
-        //    var skewness = 2.0; // коэффициент асимметрии
-        //    var kurtosis = 6.0; // эксцесс
+            var mean = Math.Pow(lambda, -1); // мат. ожидание
+            var variance = Math.Pow(lambda, -2); // дисперсия
+            var standardDeviation = Math.Sqrt(variance); // СКО
+            var skewness = 2.0; // коэффициент асимметрии
+            var kurtosis = 6.0; // эксцесс
 
-        //    var delta = Math.Pow(10, -2);
-        //    Assert.AreEqual(mean, exponentialVariable.Mean, delta);
-        //    Assert.AreEqual(variance, exponentialVariable.Variance, delta);
-        //    Assert.AreEqual(standardDeviation, exponentialVariable.StandardDeviation, delta);
-        //    Assert.AreEqual(skewness, exponentialVariable.Skewness, delta);
-        //    Assert.AreEqual(kurtosis, exponentialVariable.Kurtosis, delta);
-        //}
+            var delta = Math.Pow(10, -2);
+            Assert.AreEqual(mean, exponentialVariable.Mean, delta);
+            Assert.AreEqual(variance, exponentialVariable.Variance, delta);
+            Assert.AreEqual(standardDeviation, exponentialVariable.StandardDeviation, delta);
+            Assert.AreEqual(skewness, exponentialVariable.Skewness, delta);
+            Assert.AreEqual(kurtosis, exponentialVariable.Kurtosis, delta);
+        }
     }
 }

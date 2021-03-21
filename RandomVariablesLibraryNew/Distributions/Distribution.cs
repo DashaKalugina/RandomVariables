@@ -22,5 +22,11 @@ namespace RandomVariablesLibraryNew.Distributions
         public double Skewness => PiecewisePDF.Skewness;
 
         public double Kurtosis => PiecewisePDF.Kurtosis;
+
+        public static SumDistribution operator +(Distribution distr1, Distribution distr2)
+        {
+
+            return new SumDistribution(distr1, distr2);
+        }
     }
 }
