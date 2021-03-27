@@ -57,24 +57,51 @@ namespace RandomVariablesLibraryNew
             var isInfiniteLowerLimit = double.IsNegativeInfinity(from) && !double.IsInfinity(to);
             if (isInfiniteLowerLimit)
             {
-                Func<double, double> newFunc = (x) => integrand(-x);
+                //Func<double, double> newFunc = (x) => integrand(-x);
 
-                var toPosInfIntegral = CalculateToPositiveInfinityIntegral((-1) * to, newFunc);
-                return toPosInfIntegral;
+                //var toPosInfIntegral = CalculateToPositiveInfinityIntegral((-1) * to, newFunc);
+                //return toPosInfIntegral;
+
+                var fromMinusInfIntegral = CalculateFromMinusInfinityIntegral(to, integrand);
+                return fromMinusInfIntegral;
             }
 
-            // Случай 3. (-inf; +inf).
+            // Случай 3. (-inf; +inf)
+            var isInfiniteLimits = double.IsNegativeInfinity(from) && double.IsPositiveInfinity(to);
+            if (isInfiniteLimits)
+            {
+                var result = CalculateFromMinusInfinityIntegral(0, integrand) + CalculateToPositiveInfinityIntegral(0, integrand);
+                return result;
+            }
 
             return default;
         }
 
         /// <summary>
+        /// Вычисляет интеграл с бесконечным нижним пределом (-inf; b].
+        /// </summary>
+        /// <param name="to">Конец отрезка интегрирования</param>
+        /// <param name="integrand">Подынтегральная функция</param>
+        /// <returns></returns>
+        public static double CalculateFromMinusInfinityIntegral(double to, Func<double, double> integrand)
+        {
+            // Интеграл с бесконечным нижним пределом (-inf; b].
+            // Меняем пределы интегрирования местами: (-inf; b] -> [-b, +inf).
+            // Подынтегральная функция f(x) заменяется на g(s), так что x=-s и g(s)=f(s).
+
+            Func<double, double> newFunc = (x) => integrand(-x);
+            var toPosInfIntegral = CalculateToPositiveInfinityIntegral((-1) * to, newFunc);
+
+            return toPosInfIntegral;
+        }
+
+        /// <summary>
         /// Вычисляет интеграл с бесконечным верхним пределом [a; +inf).
         /// </summary>
-        /// <param name="from"></param>
-        /// <param name="integrand"></param>
+        /// <param name="to">Начало отрезка интегрирования</param>
+        /// <param name="integrand">Подынтегральная функция</param>
         /// <returns></returns>
-        private static double CalculateToPositiveInfinityIntegral(double from, Func<double, double> integrand)
+        public static double CalculateToPositiveInfinityIntegral(double from, Func<double, double> integrand)
         {
             // Если a < 0, то разбиваем интеграл на два по интервалам [a; 0] и [0; +inf).
             // Интеграл с пределами [0; +inf) вычисляется заменой переменной x = z / (1 - z) + 0,
