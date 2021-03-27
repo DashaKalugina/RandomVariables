@@ -22,11 +22,40 @@ namespace RandomVariablesLibraryNew
 
             foreach(var tuple in SegmentTuplesList)
             {
-                var seg1 = tuple.Item1;
-                var seg2 = tuple.Item2;
+                var segment1 = tuple.Item1;
+                var segment2 = tuple.Item2;
 
-                var fun1 = GetFunc1(seg1, seg2, x);
-                var fun2 = GetFunc2(seg1, seg2, x);
+                var fun1 = GetFunc1(segment1, segment2, x);
+                var fun2 = GetFunc2(segment1, segment2, x);
+
+                var minX = Math.Max(segment1.A, x - segment2.B);
+                var maxX = Math.Min(segment1.B, x - segment2.A);
+
+                var minY = Math.Max(segment2.A, x - segment1.B);
+                var maxY = Math.Min(segment2.B, x - segment1.A);
+
+                var isSegment1Finite = !double.IsInfinity(segment1.A) && !double.IsInfinity(segment1.A);
+                var isSegment2Finite = !double.IsInfinity(segment2.A) && !double.IsInfinity(segment2.A);
+
+                if (isSegment1Finite && isSegment2Finite)
+                {
+                    // здесь будет обработка полюсов
+
+                    // Полюсов нет, интегрируем по х
+                    integralValue += IntegralCalculator.Integrate(minX, maxX, fun1);
+                } 
+                else if (isSegment1Finite && (double.IsInfinity(segment2.A) || double.IsInfinity(segment2.B)))
+                {
+                    // Сегмент 1 конечный, интегрируем по х
+                    integralValue += IntegralCalculator.Integrate(minX, maxX, fun1);
+                }
+                else if (isSegment2Finite && (double.IsInfinity(segment1.A) || double.IsInfinity(segment1.B)))
+                {
+                    // Сегмент 2 конечный, интегрируем по y
+                    integralValue += IntegralCalculator.Integrate(minY, maxY, fun2);
+                }
+
+                //if ()
             }
 
             //var func1 = GetFunc1(

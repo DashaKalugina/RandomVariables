@@ -41,10 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BreakPoint.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="ConvolutionCalculator.cs" />
+    <Compile Include="ConvolutionRunner.cs" />
     <Compile Include="Distributions\Distribution.cs" />
     <Compile Include="Distributions\ExponentialDistribution.cs" />
     <Compile Include="Distributions\NormalDistribution.cs" />
+    <Compile Include="Distributions\SumDistribution.cs" />
     <Compile Include="Distributions\UniformDistribution.cs" />
     <Compile Include="InfinityType.cs" />
     <Compile Include="IntegralCalculator.cs" />
