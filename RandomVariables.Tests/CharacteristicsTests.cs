@@ -114,7 +114,7 @@ namespace RandomVariables.Tests
             Assert.AreEqual(Math.PI/Math.Sqrt(7), res2, abs);
         }
 
-        [TestCase(0.5)]
+        //[TestCase(0.5)]
         [TestCase(1.0)]
         [TestCase(1.5)]
         public void GenerateExponentialVariableAndCheckCharacteristics(double lambda)
@@ -133,6 +133,28 @@ namespace RandomVariables.Tests
             Assert.AreEqual(standardDeviation, exponentialVariable.StandardDeviation, delta);
             Assert.AreEqual(skewness, exponentialVariable.Skewness, delta);
             Assert.AreEqual(kurtosis, exponentialVariable.Kurtosis, delta);
+        }
+
+        [Test]
+        public void TestSumDistributionOfUniformVariables()
+        {
+            var var1 = new UniformDistribution(0, 1);
+            var var2 = new UniformDistribution(0, 1);
+
+            var sum = var1 + var2;
+
+            var delta = Math.Pow(10, -3);
+        }
+
+        [Test]
+        public void TestSumDistributionOfNormalVariables()
+        {
+            var var1 = new NormalDistribution(0, 1);
+            var var2 = new NormalDistribution(0, 1);
+
+            var sum = var1 + var2;
+
+            var delta = Math.Pow(10, -3);
         }
     }
 }

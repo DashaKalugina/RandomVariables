@@ -15,57 +15,61 @@ namespace RandomVariablesLibraryNew
 
             var resultPiecewiseFunction = new PiecewiseFunction();
 
-            var breaksCount = breaks.Count;
-
-            //if (breaksCount > 0 && double.IsNegativeInfinity(breaks[0].X))
-            //{
-            //    var appropriateSegments = FindSegments(f, g, breaks[1].X - 1);
-            //    var convRunner = new ConvolutionRunner(appropriateSegments);
-
-            //    Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPoint(x);
-
-            //    var minusInfSegment = new MinusInfinitySegment(breaks[1].X, probabilityFunction);
-            //    resultPiecewiseFunction.AddSegment(minusInfSegment);
-            //}
-
-            //if (breaksCount > 0 && double.IsPositiveInfinity(breaks[breaksCount - 1].X))
-            //{
-            //    var appropriateSegments = FindSegments(f, g, breaks[breaksCount - 2].X + 1);
-            //    var convRunner = new ConvolutionRunner(appropriateSegments);
-
-            //    Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPoint(x);
-
-            //    var plusInfSegment = new PlusInfinitySegment(breaks[breaksCount - 2].X, probabilityFunction);
-            //    resultPiecewiseFunction.AddSegment(plusInfSegment);
-            //}
-
-            for (var i = 0; i < breaksCount; i++)
+            if (breaks.Count > 0 && double.IsNegativeInfinity(breaks[0].X))
             {
-                if (i == 0 && double.IsNegativeInfinity(breaks[0].X))
-                {
-                    var appropriateSegments = FindSegments(f, g, breaks[1].X - 1);
-                    var convRunner = new ConvolutionRunner(appropriateSegments);
+                var appropriateSegments = FindSegments(f, g, breaks[1].X - 1);
+                var convRunner = new ConvolutionRunner(appropriateSegments);
 
-                    Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPoint(x);
+                Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPoint(x);
 
-                    var minusInfSegment = new MinusInfinitySegment(breaks[1].X, probabilityFunction);
-                    resultPiecewiseFunction.AddSegment(minusInfSegment);
+                var minusInfSegment = new MinusInfinitySegment(breaks[1].X, probabilityFunction);
+                resultPiecewiseFunction.AddSegment(minusInfSegment);
 
-                    continue;
-                }
+                breaks.RemoveAt(0);
+            }
 
-                if (i == breaksCount - 1 && double.IsPositiveInfinity(breaks[breaksCount - 1].X))
-                {
-                    var appropriateSegments = FindSegments(f, g, breaks[breaksCount - 2].X + 1);
-                    var convRunner = new ConvolutionRunner(appropriateSegments);
+            if (breaks.Count > 0 && double.IsPositiveInfinity(breaks[breaks.Count - 1].X))
+            {
+                var appropriateSegments = FindSegments(f, g, breaks[breaks.Count - 2].X + 1);
+                var convRunner = new ConvolutionRunner(appropriateSegments);
 
-                    Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPoint(x);
+                Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPoint(x);
 
-                    var plusInfSegment = new PlusInfinitySegment(breaks[breaksCount - 2].X, probabilityFunction);
-                    resultPiecewiseFunction.AddSegment(plusInfSegment);
+                var plusInfSegment = new PlusInfinitySegment(breaks[breaks.Count - 2].X, probabilityFunction);
+                resultPiecewiseFunction.AddSegment(plusInfSegment);
 
-                    continue;
-                }
+                breaks.RemoveAt(breaks.Count - 1);
+            }
+
+            for (var i = 0; i < breaks.Count - 1; i++)
+            {
+                #region Comment
+                //if (i == 0 && double.IsNegativeInfinity(breaks[0].X))
+                //{
+                //    var appropriateSegments = FindSegments(f, g, breaks[1].X - 1);
+                //    var convRunner = new ConvolutionRunner(appropriateSegments);
+
+                //    Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPoint(x);
+
+                //    var minusInfSegment = new MinusInfinitySegment(breaks[1].X, probabilityFunction);
+                //    resultPiecewiseFunction.AddSegment(minusInfSegment);
+
+                //    continue;
+                //}
+
+                //if (i == breaksCount - 1 && double.IsPositiveInfinity(breaks[breaksCount - 1].X))
+                //{
+                //    var appropriateSegments = FindSegments(f, g, breaks[breaksCount - 2].X + 1);
+                //    var convRunner = new ConvolutionRunner(appropriateSegments);
+
+                //    Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPoint(x);
+
+                //    var plusInfSegment = new PlusInfinitySegment(breaks[breaksCount - 2].X, probabilityFunction);
+                //    resultPiecewiseFunction.AddSegment(plusInfSegment);
+
+                //    continue;
+                //}
+                #endregion
 
                 var segments = FindSegments(f, g, (breaks[i].X + breaks[i + 1].X) / 2);
                 var runner = new ConvolutionRunner(segments);
@@ -132,12 +136,12 @@ namespace RandomVariablesLibraryNew
 
             if (hasMinusInfinity)
             {
-                resultBreaks.Prepend(new BreakPoint(double.NegativeInfinity, false, false));
+                resultBreaks = resultBreaks.Prepend(new BreakPoint(double.NegativeInfinity, false, false)).ToList();
             }
 
             if (hasPlusInfinity)
             {
-                resultBreaks.Append(new BreakPoint(double.PositiveInfinity, false, false));
+                resultBreaks = resultBreaks.Append(new BreakPoint(double.PositiveInfinity, false, false)).ToList();
             }
 
             var uniqueBreakPoints = GetUniqueBreakPoints(resultBreaks);

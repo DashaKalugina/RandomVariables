@@ -53,6 +53,7 @@
     <Compile Include="InfinityType.cs" />
     <Compile Include="IntegralCalculator.cs" />
     <Compile Include="PiecewiseFunction.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Segments\ConstSegment.cs" />
     <Compile Include="Segments\MinusInfinitySegment.cs" />

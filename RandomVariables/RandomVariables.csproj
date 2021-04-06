@@ -54,9 +54,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RandomVariablesLibrary\RandomVariablesLibrary.csproj">
-      <Project>{a85f93be-f251-4b71-9764-42baaedcc126}</Project>
-      <Name>RandomVariablesLibrary</Name>
+    <ProjectReference Include="..\RandomVariablesLibraryNew\RandomVariablesLibraryNew.csproj">
+      <Project>{43bee8b6-6387-4e2c-8056-a1e407feb44a}</Project>
+      <Name>RandomVariablesLibraryNew</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -28,5 +28,20 @@ namespace RandomVariablesLibraryNew.Distributions
 
             return new SumDistribution(distr1, distr2);
         }
+
+        public string SummaryInfo => PiecewisePDF.SummaryInfo;
+
+        public List<Point> GetPDFDataForPlot(double xMin, double xMax, int numberOfPoints = 1000)
+        {
+            var resultPoints = new List<Point>();
+
+            foreach(var segment in PiecewisePDF.Segments)
+            {
+                var segmentPoints = segment.GetPoints(xMin, xMax, numberOfPoints);
+                resultPoints.AddRange(segmentPoints);
+            }
+
+            return resultPoints;
+        }
     }
 }

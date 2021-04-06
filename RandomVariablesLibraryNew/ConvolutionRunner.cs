@@ -54,8 +54,33 @@ namespace RandomVariablesLibraryNew
                     // Сегмент 2 конечный, интегрируем по y
                     integralValue += IntegralCalculator.Integrate(minY, maxY, fun2);
                 }
+                else if (double.IsInfinity(segment1.A) && double.IsInfinity(segment2.B))
+                {
+                    if (Math.Abs(maxX) < Math.Abs(minY))
+                    {
+                        integralValue += IntegralCalculator.CalculateFromMinusInfinityIntegral(maxX, fun1);
+                    } 
+                    else
+                    {
+                        integralValue += IntegralCalculator.CalculateToPositiveInfinityIntegral(minY, fun2);
+                    }
+                }
+                else if (double.IsInfinity(segment1.B) && double.IsInfinity(segment2.A))
+                {
+                    if (Math.Abs(minX) < Math.Abs(maxY))
+                    {
+                        integralValue += IntegralCalculator.CalculateFromMinusInfinityIntegral(minX, fun1);
+                    }
+                    else
+                    {
+                        integralValue += IntegralCalculator.CalculateToPositiveInfinityIntegral(maxY, fun2);
+                    }
+                }
+                else if ((double.IsInfinity(segment1.A) && double.IsInfinity(segment2.A))
+                    || double.IsInfinity(segment1.B) && double.IsInfinity(segment2.B))
+                {
 
-                //if ()
+                }
             }
 
             //var func1 = GetFunc1(

@@ -16,5 +16,26 @@ namespace RandomVariablesLibraryNew.Segments
         {
 
         }
+
+        protected override double FindRightPoint()
+        {
+            var rightPoint = A + 1;
+            var rightPointY = ProbabilityFunction(rightPoint);
+
+            var startY = rightPointY;
+
+            while (!(rightPointY / startY <= Math.Pow(10, -3)))
+            {
+                rightPoint = rightPoint + 1.2 * Math.Abs(rightPoint - A);
+                rightPointY = ProbabilityFunction(rightPoint);
+
+                if (Math.Abs(rightPoint) > Math.Pow(10, 20))
+                {
+                    return rightPoint;
+                }
+            }
+
+            return rightPoint;
+        }
     }
 }
