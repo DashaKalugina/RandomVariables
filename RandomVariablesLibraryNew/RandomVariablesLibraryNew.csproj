@@ -43,7 +43,9 @@
   <ItemGroup>
     <Compile Include="BreakPoint.cs" />
     <Compile Include="Class1.cs" />
-    <Compile Include="ConvolutionCalculator.cs" />
+    <Compile Include="Distributions\ProductDistribution.cs" />
+    <Compile Include="ProductConvolutionCalculator.cs" />
+    <Compile Include="SumConvolutionCalculator.cs" />
     <Compile Include="ConvolutionRunner.cs" />
     <Compile Include="Distributions\Distribution.cs" />
     <Compile Include="Distributions\ExponentialDistribution.cs" />

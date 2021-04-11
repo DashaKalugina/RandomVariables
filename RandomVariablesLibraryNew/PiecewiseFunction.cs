@@ -25,7 +25,7 @@ namespace RandomVariablesLibraryNew
             Segments.Add(segment);
         }
 
-        public List<BreakPoint> GetBreakPoints()
+        public List<BreakPoint> GetBreakPointsExtended()
         {
             if (Segments.Count == 0)
             {
@@ -42,6 +42,82 @@ namespace RandomVariablesLibraryNew
             }
 
             return breakPoints;
+        }
+
+        public List<double> GetBreakPoints()
+        {
+            if (Segments.Count == 0)
+            {
+                return new List<double>();
+            }
+
+            var breakPoints = new List<double>();
+
+            foreach(var segment in Segments)
+            {
+                if (!breakPoints.Contains(segment.A))
+                {
+                    breakPoints.Add(segment.A);
+                }
+
+                if (!breakPoints.Contains(segment.B))
+                {
+                    breakPoints.Add(segment.B);
+                }
+            }
+
+            return breakPoints;
+        }
+
+        public PiecewiseFunction SplitByPoints(List<double> points)
+        {
+            var splittedFunction = new PiecewiseFunction();
+
+            foreach(var segment in Segments)
+            {
+                var inds = points.Where(p => p > segment.A && p < segment.B);
+
+                var a = segment.A;
+                double b;
+
+                foreach(var ind in inds)
+                {
+                    b = ind;
+                    if (segment is MinusInfinitySegment && double.IsInfinity(a))
+                    {
+                        splittedFunction.AddSegment(new MinusInfinitySegment(b, segment.ProbabilityFunction));
+                    }
+                    else if (segment is PlusInfinitySegment && double.IsInfinity(b))
+                    {
+                        splittedFunction.AddSegment(new PlusInfinitySegment(a, segment.ProbabilityFunction));
+                    }
+                    // добавить обработку полюсов
+                    else
+                    {
+                        splittedFunction.AddSegment(new Segment(a, b, segment.ProbabilityFunction));
+                    }
+
+                    a = b;
+                }
+
+                b = segment.B;
+
+                if (segment is MinusInfinitySegment && double.IsInfinity(a))
+                {
+                    splittedFunction.AddSegment(new MinusInfinitySegment(b, segment.ProbabilityFunction));
+                }
+                else if (segment is PlusInfinitySegment && double.IsInfinity(b))
+                {
+                    splittedFunction.AddSegment(new PlusInfinitySegment(a, segment.ProbabilityFunction));
+                }
+                // добавить обработку полюсов
+                else
+                {
+                    splittedFunction.AddSegment(new Segment(a, b, segment.ProbabilityFunction));
+                }
+            }
+
+            return splittedFunction;
         }
 
         #region Characteristics

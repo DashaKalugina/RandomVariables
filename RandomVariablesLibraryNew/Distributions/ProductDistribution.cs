@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace RandomVariablesLibraryNew.Distributions
 {
-    public class SumDistribution: Distribution
+    public class ProductDistribution: Distribution
     {
         public Distribution Distr1 { get; set; }
 
         public Distribution Distr2 { get; set; }
 
-        public SumDistribution(Distribution distr1, Distribution distr2)
+        public ProductDistribution(Distribution distr1, Distribution distr2)
         {
             Distr1 = distr1;
             Distr2 = distr2;
-            
-            PiecewisePDF = SumConvolutionCalculator.Calculate(distr1.PiecewisePDF, distr2.PiecewisePDF);
+
+            PiecewisePDF = ProductConvolutionCalculator.Calculate(distr1.PiecewisePDF, distr2.PiecewisePDF);
         }
     }
 }

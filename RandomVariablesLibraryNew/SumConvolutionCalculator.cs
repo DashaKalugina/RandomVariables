@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RandomVariablesLibraryNew
 {
-    public static class ConvolutionCalculator
+    public static class SumConvolutionCalculator
     {
         public static PiecewiseFunction Calculate(PiecewiseFunction f, PiecewiseFunction g)
         {
@@ -15,7 +15,7 @@ namespace RandomVariablesLibraryNew
 
             var resultPiecewiseFunction = new PiecewiseFunction();
 
-            if (breaks.Count > 0 && double.IsNegativeInfinity(breaks[0].X))
+            if (breaks.Count > 1 && double.IsNegativeInfinity(breaks[0].X))
             {
                 var appropriateSegments = FindSegments(f, g, breaks[1].X - 1);
                 var convRunner = new ConvolutionRunner(appropriateSegments);
@@ -28,7 +28,7 @@ namespace RandomVariablesLibraryNew
                 breaks.RemoveAt(0);
             }
 
-            if (breaks.Count > 0 && double.IsPositiveInfinity(breaks[breaks.Count - 1].X))
+            if (breaks.Count > 1 && double.IsPositiveInfinity(breaks[breaks.Count - 1].X))
             {
                 var appropriateSegments = FindSegments(f, g, breaks[breaks.Count - 2].X + 1);
                 var convRunner = new ConvolutionRunner(appropriateSegments);
@@ -88,8 +88,8 @@ namespace RandomVariablesLibraryNew
         {
             var resultBreaks = new List<BreakPoint>();
 
-            var fbreaks = f.GetBreakPoints();
-            var gbreaks = g.GetBreakPoints();
+            var fbreaks = f.GetBreakPointsExtended();
+            var gbreaks = g.GetBreakPointsExtended();
 
             var hasMinusInfinity = false;
             var hasPlusInfinity = false;
