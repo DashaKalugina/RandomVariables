@@ -156,5 +156,12 @@ namespace RandomVariables.Tests
 
             var delta = Math.Pow(10, -3);
         }
+
+        [Test]
+        public void ChiSquareTest()
+        {
+            var uniformDistribution = new UniformDistribution(0, 1);
+
+        }
     }
 }
