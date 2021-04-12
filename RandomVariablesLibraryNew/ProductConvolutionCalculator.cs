@@ -16,15 +16,15 @@ namespace RandomVariablesLibraryNew
             var fSplitted = f.SplitByPoints(new List<double> { -1, 0, 1 });
             var gSplitted = g.SplitByPoints(new List<double> { -1, 0, 1 });
 
-
-            var breaks = GetResultBreakPoints(f, g);
+            var breaks = GetResultBreakPoints(fSplitted, gSplitted);
+            breaks.Sort();
             Func<double, double, double> operation = (a, b) => a * b;
 
             var resultPiecewiseFunction = new PiecewiseFunction();
 
             if (breaks.Count > 1 && double.IsNegativeInfinity(breaks[0]))
             {
-                var appropriateSegments = FindSegments(f, g, breaks[1] - 1);
+                var appropriateSegments = FindSegments(fSplitted, gSplitted, breaks[1] - 1);
                 var convRunner = new ConvolutionRunner(appropriateSegments);
 
                 Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPointProduct(x);
@@ -37,7 +37,7 @@ namespace RandomVariablesLibraryNew
 
             if (breaks.Count > 1 && double.IsPositiveInfinity(breaks[breaks.Count - 1]))
             {
-                var appropriateSegments = FindSegments(f, g, breaks[breaks.Count - 2] + 1);
+                var appropriateSegments = FindSegments(fSplitted, gSplitted, breaks[breaks.Count - 2] + 1);
                 var convRunner = new ConvolutionRunner(appropriateSegments);
 
                 Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPointProduct(x);
@@ -50,15 +50,14 @@ namespace RandomVariablesLibraryNew
 
             for (var i = 0; i < breaks.Count - 1; i++)
             {
-                var segments = FindSegments(f, g, (breaks[i] + breaks[i + 1]) / 2);
+                var segments = FindSegments(fSplitted, gSplitted, (breaks[i] + breaks[i + 1]) / 2);
                 var runner = new ConvolutionRunner(segments);
 
                 Func<double, double> func = (x) => runner.GetConvolutionValueAtPointProduct(x);
 
-                //var newSegment = new Segment(breaks[i].X, breaks[i + 1].X, func);
+                var newSegment = new Segment(breaks[i], breaks[i + 1], func);
 
-                //resultPiecewiseFunction.AddSegment(newSegment);
-
+                resultPiecewiseFunction.AddSegment(newSegment);
             }
 
 
