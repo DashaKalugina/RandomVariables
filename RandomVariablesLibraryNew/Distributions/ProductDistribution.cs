@@ -19,5 +19,10 @@ namespace RandomVariablesLibraryNew.Distributions
 
             PiecewisePDF = ProductConvolutionCalculator.Calculate(distr1.PiecewisePDF, distr2.PiecewisePDF);
         }
+
+        public override double GetNewRandomValue()
+        {
+            return Distr1.GetNewRandomValue() * Distr2.GetNewRandomValue();
+        }
     }
 }

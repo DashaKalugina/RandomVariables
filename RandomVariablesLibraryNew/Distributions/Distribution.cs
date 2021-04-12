@@ -25,8 +25,12 @@ namespace RandomVariablesLibraryNew.Distributions
 
         public static SumDistribution operator +(Distribution distr1, Distribution distr2)
         {
-
             return new SumDistribution(distr1, distr2);
+        }
+
+        public static ProductDistribution operator *(Distribution distr1, Distribution distr2)
+        {
+            return new ProductDistribution(distr1, distr2);
         }
 
         public string SummaryInfo => PiecewisePDF.SummaryInfo;
@@ -43,5 +47,20 @@ namespace RandomVariablesLibraryNew.Distributions
 
             return resultPoints;
         }
+
+        public List<double> GetProbabilityFunctionValues(int numberOfPoints = 1000)
+        {
+            var result = new List<double>();
+
+            foreach (var segment in PiecewisePDF.Segments)
+            {
+                var segmentPoints = segment.GetProbabilityFunctionValues(numberOfPoints);
+                result.AddRange(segmentPoints);
+            }
+
+            return result;
+        }
+
+        public abstract double GetNewRandomValue();
     }
 }

@@ -1,4 +1,5 @@
-﻿using RandomVariablesLibraryNew.Segments;
+﻿using RandomVariablesLibraryNew.Generators;
+using RandomVariablesLibraryNew.Segments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,11 @@ namespace RandomVariablesLibraryNew.Distributions
             PiecewisePDF.AddSegment(new MinusInfinitySegment(b1, ProbabilityFunction));
             PiecewisePDF.AddSegment(new Segment(b1, b2, ProbabilityFunction));
             PiecewisePDF.AddSegment(new PlusInfinitySegment(b2, ProbabilityFunction));
+        }
+
+        public override double GetNewRandomValue()
+        {
+            return NormalGenerator.Next(Mu, Sigma);
         }
     }
 }

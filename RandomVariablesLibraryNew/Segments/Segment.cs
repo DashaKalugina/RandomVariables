@@ -64,6 +64,30 @@ namespace RandomVariablesLibraryNew.Segments
             return points;
         }
 
+        public List<double> GetProbabilityFunctionValues(int numberOfPoints)
+        {
+            var pdfValues = new List<double>();
+
+            var leftPoint = FindLeftPoint();
+            var rightPoint = FindRightPoint();
+
+            if (leftPoint >= rightPoint)
+            {
+                return new List<double>();
+            }
+
+            var step = (rightPoint - leftPoint) / (numberOfPoints - 1);
+
+            for (var i = 0; i < numberOfPoints; i++)
+            {
+                var x = leftPoint + i * step;
+                var y = ProbabilityFunction(x);
+                pdfValues.Add(y);
+            }
+
+            return pdfValues;
+        }
+
         protected virtual double FindLeftPoint() => A;
 
         protected virtual double FindRightPoint() => B;

@@ -1,4 +1,5 @@
-﻿using RandomVariablesLibraryNew.Segments;
+﻿using RandomVariablesLibraryNew.Generators;
+using RandomVariablesLibraryNew.Segments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,11 @@ namespace RandomVariablesLibraryNew.Distributions
 
             PiecewisePDF = new PiecewiseFunction();
             PiecewisePDF.AddSegment(new Segment(A, B, ProbabilityFunction));
+        }
+
+        public override double GetNewRandomValue()
+        {
+            return UniformGenerator.Next(A, B);
         }
     }
 }
