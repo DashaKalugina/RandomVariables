@@ -48,17 +48,28 @@ namespace RandomVariablesLibraryNew.Distributions
             return resultPoints;
         }
 
-        public List<double> GetProbabilityFunctionValues(int numberOfPoints = 1000)
+        public List<double> GetProbabilityFunctionValues(int numberOfPointsBySegment = 100000)
         {
             var result = new List<double>();
 
             foreach (var segment in PiecewisePDF.Segments)
             {
-                var segmentPoints = segment.GetProbabilityFunctionValues(numberOfPoints);
+                var segmentPoints = segment.GetProbabilityFunctionValues(numberOfPointsBySegment);
                 result.AddRange(segmentPoints);
             }
 
             return result;
+        }
+
+        public double GetPdfValueAtPoint(double point)
+        {
+            var segment = PiecewisePDF.Segments.SingleOrDefault(s => point >= s.A && point <= s.B);
+            if (segment!= null)
+            {
+                return segment[point];
+            }
+
+            return default;
         }
 
         public abstract double GetNewRandomValue();

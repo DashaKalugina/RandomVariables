@@ -4,6 +4,7 @@ using RandomVariablesLibraryNew.Distributions;
 //using RandomVariablesLibrary.Distributions;
 
 using System;
+using System.Collections.Generic;
 
 namespace RandomVariables.Tests
 {
@@ -157,11 +158,94 @@ namespace RandomVariables.Tests
             var delta = Math.Pow(10, -3);
         }
 
-        [Test]
-        public void ChiSquareTest()
+        [TestCase(0.0, 1.0)]
+        [TestCase(-1.0, 10.0)]
+        [TestCase(1, 5)]
+        [TestCase(-100.4, 76)]
+        [TestCase(-1728.5, -18.5)]
+        public void UniformDistributionChiSquareTest(double a, double b)
         {
-            var uniformDistribution = new UniformDistribution(0, 1);
+            var uniformDistribution = new UniformDistribution(a, b);
 
+            var test = ChiSquareTest.Test(uniformDistribution);
+            Assert.IsTrue(test);
+        }
+
+        [TestCase(0, 1)]
+        [TestCase(0, 0.8)]
+        [TestCase(1, 1)]
+        [TestCase(1, 0.2)]
+        [TestCase(-2, 0.5)]
+        public void NormalDistributionChiSquareTest(double mu, double sigma)
+        {
+            var normalDistributedVariable = new NormalDistribution(mu, sigma);
+
+            var test = ChiSquareTest.Test(normalDistributedVariable);
+            Assert.IsTrue(test);
+        }
+
+        [TestCase(0.0, 1.0)]
+        [TestCase(-1.0, 10.0)]
+        [TestCase(1, 5)]
+        [TestCase(-100.4, 76)]
+        [TestCase(-1728.5, -18.5)]
+        public void SumOfTwoUniformDistributionsChiSquareTest(double a, double b)
+        {
+            var distr1 = new UniformDistribution(a, b);
+            var distr2 = new UniformDistribution(a, b);
+
+            var sum = distr1 + distr2;
+
+            var test = ChiSquareTest.Test(sum);
+            Assert.IsTrue(test);
+        }
+
+        [TestCase(0, 1)]
+        [TestCase(0, 0.8)]
+        [TestCase(1, 1)]
+        [TestCase(1, 0.2)]
+        [TestCase(-2, 0.5)]
+        public void SumOfTwoNormalDistributionsChiSquareTest(double mu, double sigma)
+        {
+            var distr1 = new NormalDistribution(mu, sigma);
+            var distr2 = new NormalDistribution(mu, sigma);
+
+            var sum = distr1 + distr2;
+
+            var test = ChiSquareTest.Test(sum);
+            Assert.IsTrue(test);
+        }
+
+        [TestCase(0.0, 1.0)]
+        [TestCase(-1.0, 10.0)]
+        [TestCase(1, 5)]
+        [TestCase(-100.4, 76)]
+        [TestCase(-1728.5, -18.5)]
+        public void ProductOfTwoUniformDistributionsChiSquareTest(double a, double b)
+        {
+            var distr1 = new UniformDistribution(a, b);
+            var distr2 = new UniformDistribution(a, b);
+
+            var sum = distr1 * distr2;
+
+            var test = ChiSquareTest.Test(sum);
+            Assert.IsTrue(test);
+        }
+
+        [TestCase(0, 1)]
+        [TestCase(0, 0.8)]
+        [TestCase(1, 1)]
+        [TestCase(1, 0.2)]
+        [TestCase(-2, 0.5)]
+        public void ProductOfTwoNormalDistributionsChiSquareTest(double mu, double sigma)
+        {
+            var distr1 = new NormalDistribution(mu, sigma);
+            var distr2 = new NormalDistribution(mu, sigma);
+
+            var sum = distr1 * distr2;
+
+            var test = ChiSquareTest.Test(sum);
+            Assert.IsTrue(test);
         }
     }
 }

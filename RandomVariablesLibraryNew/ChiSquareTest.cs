@@ -6,82 +6,88 @@ using System.Text;
 using System.Threading.Tasks;
 using Accord.Statistics;
 using Test = Accord.Statistics.Testing.ChiSquareTest;
+using CenterSpace.NMath.Stats;
+using RandomVariablesLibraryNew.Distributions;
 
 namespace RandomVariablesLibraryNew
 {
     public static class ChiSquareTest
     {
-        private const int N = 1000;
-        private const int degreesOfFreedom = N;
-
-        public static bool Test(List<double> expected, List<double> observed)
+        public static bool Test(Distribution distribution)
         {
-            //var degreesOfFreedom = observed.Length - 1;
+            var dataCount = 100000;
+            var dataSampling = new List<double>();
 
-            var numberOfHitsExpected = GetNumberOfHitsAtIntervals(expected);
-            var numberOfHitsObserved = GetNumberOfHitsAtIntervals(observed);
+            for (var i = 0; i < dataCount; i++)
+            {
+                dataSampling.Add(distribution.GetNewRandomValue());
+            }
+            dataSampling.Sort();
 
-            var chiSquareTest = new Test(numberOfHitsExpected, numberOfHitsObserved, degreesOfFreedom);
+            // Определяем кол-во интервалов для разбиения по формуле Стерджеса
+            var numberOfIntervals = (int)Math.Ceiling(1 + 3.322 * Math.Log10(dataCount));
+            var (pdfValuesExpected, pdfValuesActual) = CalculateExpectedAndActualPDFValues(distribution, dataSampling.ToArray(), numberOfIntervals);
 
-            var pValue = chiSquareTest.PValue;
+            var chiSquareTest = new Test(pdfValuesExpected, pdfValuesActual, numberOfIntervals);
 
             var significant = chiSquareTest.Significant;
 
             return !significant;
         }
 
-        public static double[] GetNumberOfHitsAtIntervals(List<double> data)
+        private static (double[], double[]) CalculateExpectedAndActualPDFValues(Distribution distribution, double[] variableValues, int numberOfIntervals)
         {
-            var dict = new Dictionary<double, int>();
+            var probabilities = new double[numberOfIntervals + 1];
+            var pdfValuesExpected = new double[numberOfIntervals + 1];
+            //var pdfValuesActual = new double[numberOfIntervals + 1];
 
-            // сортируем данные
-            data.Sort();
+            var min = variableValues.Min();
+            var max = variableValues.Max();
+            var intervalLength = (max - min) / numberOfIntervals;
 
-            //const int N = 1001; // кол-во точек
-            //var deegreesOfFreedom = N - 1; // кол-во интервалов
-
-            var minValue = data[5];
-            var maxValue = data[data.Count - 6];
-
-            var step = (maxValue - minValue) / degreesOfFreedom;
-
-            for (var i = 0; i < N - 1; i++)
+            var counts = new int[numberOfIntervals + 1];
+            foreach (var value in variableValues)
             {
-                dict.Add(minValue + i * step, 0);
+                var index = (int)((value - min) / intervalLength);
+
+                counts[index]++;
             }
 
-            dict.Add(double.PositiveInfinity, 0);
-
-            foreach (var point in data)
+            var variableValues1 = new double[numberOfIntervals + 1];
+            for (int i = 0; i < probabilities.Length; i++)
             {
-                if (point < minValue)
-                {
-                    dict[minValue]++;
-                    continue;
-                }
+                var variableValue = min + i * intervalLength;
+                variableValues1[i] = variableValue;
+                probabilities[i] = (double)counts[i] / variableValues.Length;
 
-                if (point > maxValue)
-                {
-                    dict[double.PositiveInfinity]++;
-                    continue;
-                }
-
-                var rightValueOfInterval = dict.Keys.FirstOrDefault(key => point < key);
-                if (dict.ContainsKey(rightValueOfInterval))
-                {
-                    dict[rightValueOfInterval]++;
-                }
+                pdfValuesExpected[i] = distribution.GetPdfValueAtPoint(variableValue);
             }
 
-            if (!dict.Values.Sum().Equals(data.Count))
+            var probabilitiesSum = probabilities.Sum();
+            if (Math.Abs(1 - probabilitiesSum) > Math.Pow(10, -6))
             {
-                throw new Exception("Неверно подсчитано кол-во попаданий по интервалам.");
+                throw new Exception("Сумма вероятностей должна быть равна единице!");
             }
 
-            var hitProbabilities = dict.Values.Select(value => (double)value / data.Count);
-            
+            var pdfValuesActual = CalculateProbabilityFunctionValues(probabilities, variableValues1, numberOfIntervals);
 
-            return hitProbabilities.ToArray();
+            return (pdfValuesExpected, pdfValuesActual);
+        }
+
+        private static double[] CalculateProbabilityFunctionValues(double[] probabilities, double[] variableValues, int numberOfIntervals)
+        {
+            var length = numberOfIntervals + 1;
+            var probabilityFunctionValues = new double[length];
+
+            for (var i = 0; i < length; i++)
+            {
+                var funcValue = i > 0 && i < length - 1 && probabilities[i] != 0
+                    ? probabilities[i] / (variableValues[i + 1] - variableValues[i])
+                    : probabilities[i];
+                probabilityFunctionValues[i] = funcValue;
+            }
+
+            return probabilityFunctionValues;
         }
     }
 }
