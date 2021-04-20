@@ -38,7 +38,7 @@ namespace RandomVariablesLibraryNew.Distributions
         public List<Point> GetPDFDataForPlot(double xMin, double xMax, int numberOfPoints = 1000)
         {
             var resultPoints = new List<Point>();
-
+            var segments = PiecewisePDF.Segments.OrderBy(s => s.A);
             foreach(var segment in PiecewisePDF.Segments)
             {
                 var segmentPoints = segment.GetPoints(xMin, xMax, numberOfPoints);

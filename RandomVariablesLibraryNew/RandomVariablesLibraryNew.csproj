@@ -72,7 +72,12 @@
     <Compile Include="Generators\NormalGenerator.cs" />
     <Compile Include="Generators\NormalRandom.cs" />
     <Compile Include="Generators\UniformGenerator.cs" />
+    <Compile Include="Interpolators\AdaptiveBarycentricInterpolator.cs" />
+    <Compile Include="Interpolators\ChebyshevInterpolator.cs" />
+    <Compile Include="Interpolators\ChebyshevInterpolatorNoL.cs" />
+    <Compile Include="Interpolators\PoleInterpolatorP.cs" />
     <Compile Include="ProductConvolutionCalculator.cs" />
+    <Compile Include="Segments\SegmentWithPole.cs" />
     <Compile Include="SumConvolutionCalculator.cs" />
     <Compile Include="ConvolutionRunner.cs" />
     <Compile Include="Distributions\Distribution.cs" />

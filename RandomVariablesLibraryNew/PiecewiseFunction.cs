@@ -25,6 +25,20 @@ namespace RandomVariablesLibraryNew
             Segments.Add(segment);
         }
 
+        public double this[double x]
+        {
+            get
+            {
+                var segment = Segments.SingleOrDefault(s => x >= s.A && x <= s.B);
+                if (segment != null)
+                {
+                    return segment[x];
+                }
+
+                return default;
+            }
+        }
+
         public List<BreakPoint> GetBreakPointsExtended()
         {
             if (Segments.Count == 0)
@@ -92,6 +106,17 @@ namespace RandomVariablesLibraryNew
                         splittedFunction.AddSegment(new PlusInfinitySegment(a, segment.ProbabilityFunction));
                     }
                     // добавить обработку полюсов
+                    else if (segment is SegmentWithPole segmentWithPole)
+                    {
+                        if (segmentWithPole.LeftPole && a == segment.A)
+                        {
+                            splittedFunction.AddSegment(new SegmentWithPole(a, b, segment.ProbabilityFunction, true));
+                        }
+                        else if (!segmentWithPole.LeftPole && b == segment.B)
+                        {
+                            splittedFunction.AddSegment(new SegmentWithPole(a, b, segment.ProbabilityFunction, false));
+                        }
+                    }
                     else
                     {
                         splittedFunction.AddSegment(new Segment(a, b, segment.ProbabilityFunction));

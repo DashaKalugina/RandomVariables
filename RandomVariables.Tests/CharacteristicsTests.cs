@@ -53,7 +53,7 @@ namespace RandomVariables.Tests
             var skewness = 0; // коэффициент асимметрии
             var kurtosis = 0; // эксцесс
 
-            var delta = Math.Pow(10, -3);
+            var delta = Math.Pow(10, -4);
             Assert.AreEqual(mean, normalDistributedVariable.Mean, delta);
             Assert.AreEqual(variance, normalDistributedVariable.Variance, delta);
             Assert.AreEqual(standardDeviation, normalDistributedVariable.StandardDeviation, delta);
@@ -68,7 +68,7 @@ namespace RandomVariables.Tests
         [Test]
         public void ToPositiveInfinityIntegralTest()
         {
-            var abs = Math.Pow(10, -4);
+            var abs = Math.Pow(10, -8);
 
             Func<double, double> func1 = (x) => 1 / Math.Pow(x, 2);
             var res1 = IntegralCalculator.Integrate(1, double.PositiveInfinity, func1);
@@ -90,7 +90,7 @@ namespace RandomVariables.Tests
         [Test]
         public void FromNegativeInfinityIntegralTest()
         {
-            var abs = Math.Pow(10, -4);
+            var abs = Math.Pow(10, -8);
 
             Func<double, double> func1 = (x) => 2.0 / (Math.Pow(x, 2) + 9);
             var res1 = IntegralCalculator.Integrate(double.NegativeInfinity, -3.0, func1);
@@ -104,7 +104,7 @@ namespace RandomVariables.Tests
         [Test]
         public void FromNegativeToPositiveInfinityIntegralTest()
         {
-            var abs = Math.Pow(10, -4);
+            var abs = Math.Pow(10, -8);
 
             Func<double, double> func1 = (x) => x * Math.Pow(Math.E, (-1) * x * x);
             var res1 = IntegralCalculator.Integrate(double.NegativeInfinity, double.PositiveInfinity, func1);
@@ -115,7 +115,7 @@ namespace RandomVariables.Tests
             Assert.AreEqual(Math.PI/Math.Sqrt(7), res2, abs);
         }
 
-        //[TestCase(0.5)]
+        [TestCase(0.5)]
         [TestCase(1.0)]
         [TestCase(1.5)]
         public void GenerateExponentialVariableAndCheckCharacteristics(double lambda)
@@ -128,7 +128,7 @@ namespace RandomVariables.Tests
             var skewness = 2.0; // коэффициент асимметрии
             var kurtosis = 6.0; // эксцесс
 
-            var delta = Math.Pow(10, -2);
+            var delta = Math.Pow(10, -3);
             Assert.AreEqual(mean, exponentialVariable.Mean, delta);
             Assert.AreEqual(variance, exponentialVariable.Variance, delta);
             Assert.AreEqual(standardDeviation, exponentialVariable.StandardDeviation, delta);
@@ -229,6 +229,28 @@ namespace RandomVariables.Tests
             var sum = distr1 * distr2;
 
             var test = ChiSquareTest.Test(sum);
+            Assert.IsTrue(test);
+        }
+
+        [TestCase(0, 1, 2)]
+        [TestCase(0, 1, 3)]
+        [TestCase(0, 1, 4)]
+        public void ProductOfTwoUniform2(double a, double b, int count)
+        {
+            var distr1 = new UniformDistribution(a, b);
+            var distr2 = new UniformDistribution(a, b);
+
+            var product = distr1 * distr2;
+            if (count > 2)
+            {
+                for (var i = 0; i < count - 2; i++)
+                {
+                    var distr = new UniformDistribution(a, b);
+                    product = product * distr;
+                }
+            }
+
+            var test = ChiSquareTest.Test(product);
             Assert.IsTrue(test);
         }
 

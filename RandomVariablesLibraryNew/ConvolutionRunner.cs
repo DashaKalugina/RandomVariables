@@ -33,11 +33,11 @@ namespace RandomVariablesLibraryNew
                 var fun1 = GetSumFunc1(segment1, segment2, x);
                 var fun2 = GetSumFunc2(segment1, segment2, x);
 
-                var minX = Math.Max(segment1.A, x - segment2.B);
-                var maxX = Math.Min(segment1.B, x - segment2.A);
+                var minX = Math.Max(segment1.SafeA, x - segment2.SafeB);
+                var maxX = Math.Min(segment1.SafeB, x - segment2.SafeA);
 
-                var minY = Math.Max(segment2.A, x - segment1.B);
-                var maxY = Math.Min(segment2.B, x - segment1.A);
+                var minY = Math.Max(segment2.SafeA, x - segment1.SafeB);
+                var maxY = Math.Min(segment2.SafeB, x - segment1.SafeA);
 
                 var isSegment1Finite = !double.IsInfinity(segment1.A) && !double.IsInfinity(segment1.A);
                 var isSegment2Finite = !double.IsInfinity(segment2.A) && !double.IsInfinity(segment2.A);
@@ -156,11 +156,13 @@ namespace RandomVariablesLibraryNew
         private Func<double, double> GetProductFunc1(Segment segment1, Segment segment2, double x)
         {
             return (t) => t == 0 ? 0 : segment1[t] * segment2[x / t] * 1.0 / Math.Abs(t);
+            //return (t) => segment1[t] * segment2[x / t] * 1.0 / Math.Abs(t);
         }
 
         private Func<double, double> GetProductFunc2(Segment segment1, Segment segment2, double x)
         {
             return (t) => t == 0 ? 0 : segment1[x / t] * segment2[t] * 1.0 / Math.Abs(t);
+            //return (t) => segment1[x / t] * segment2[t] * 1.0 / Math.Abs(t);
         }
 
         private Func<double, double> GetSumFunc1(Segment segment1, Segment segment2, double x)

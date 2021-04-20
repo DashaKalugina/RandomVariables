@@ -16,13 +16,18 @@ namespace RandomVariablesLibraryNew
             var fSplitted = f.SplitByPoints(new List<double> { -1, 0, 1 });
             var gSplitted = g.SplitByPoints(new List<double> { -1, 0, 1 });
 
+            var f_0 = fSplitted[0];
+            var g_0 = gSplitted[0];
+            var poleAtZero = f_0 > 0 && g_0 > 0;
+
             var breaks = GetResultBreakPoints(fSplitted, gSplitted);
             breaks.Sort();
             Func<double, double, double> operation = (a, b) => a * b;
 
             var resultPiecewiseFunction = new PiecewiseFunction();
 
-            if (breaks.Count > 1 && double.IsNegativeInfinity(breaks[0]))
+            //if (breaks.Count > 1 && double.IsNegativeInfinity(breaks[0]))
+            if (double.IsInfinity(breaks[0]))
             {
                 var appropriateSegments = FindSegments(fSplitted, gSplitted, breaks[1] - 1);
                 var convRunner = new ConvolutionRunner(appropriateSegments);
@@ -35,7 +40,8 @@ namespace RandomVariablesLibraryNew
                 breaks.RemoveAt(0);
             }
 
-            if (breaks.Count > 1 && double.IsPositiveInfinity(breaks[breaks.Count - 1]))
+            //if (breaks.Count > 1 && double.IsPositiveInfinity(breaks[breaks.Count - 1]))
+            if (double.IsInfinity(breaks[breaks.Count - 1]))
             {
                 var appropriateSegments = FindSegments(fSplitted, gSplitted, breaks[breaks.Count - 2] + 1);
                 var convRunner = new ConvolutionRunner(appropriateSegments);
@@ -52,10 +58,38 @@ namespace RandomVariablesLibraryNew
             {
                 var segments = FindSegments(fSplitted, gSplitted, (breaks[i] + breaks[i + 1]) / 2);
                 var runner = new ConvolutionRunner(segments);
-
                 Func<double, double> func = (x) => runner.GetConvolutionValueAtPointProduct(x);
 
-                var newSegment = new Segment(breaks[i], breaks[i + 1], func);
+                Segment newSegment = null;
+
+                if (breaks[i] == 0)
+                {
+                    if (poleAtZero)
+                    {
+                        newSegment = new SegmentWithPole(breaks[i], breaks[i + 1], func, true);
+                    }
+                    else
+                    {
+                        newSegment = new Segment(breaks[i], breaks[i + 1], func);
+                    }
+                }
+                else if (breaks[i + 1] == 0)
+                {
+                    if (poleAtZero)
+                    {
+                        newSegment = new SegmentWithPole(breaks[i], breaks[i + 1], func, false);
+                    }
+                    else
+                    {
+                        newSegment = new Segment(breaks[i], breaks[i + 1], func);
+                    }
+                }
+                else
+                {
+                    newSegment = new Segment(breaks[i], breaks[i + 1], func);
+                }
+
+                //var newSegment = new Segment(breaks[i], breaks[i + 1], func);
 
                 resultPiecewiseFunction.AddSegment(newSegment);
             }
@@ -72,12 +106,20 @@ namespace RandomVariablesLibraryNew
             {
                 foreach (var gseg in g.Segments)
                 {
+                    //var products = new List<double>
+                    //{
+                    //    fseg.A * gseg.A,
+                    //    fseg.A * gseg.B,
+                    //    fseg.B * gseg.A,
+                    //    fseg.B * gseg.B,
+                    //};
+
                     var products = new List<double>
                     {
                         fseg.A * gseg.A,
+                        fseg.B * gseg.B,
                         fseg.A * gseg.B,
                         fseg.B * gseg.A,
-                        fseg.B * gseg.B,
                     };
                     var uniqueProducts = products.Where(p => !double.IsNaN(p)).Distinct();
                     var minP = uniqueProducts.Min();

@@ -12,6 +12,10 @@ namespace RandomVariablesLibraryNew.Segments
 
         public double B { get; }
 
+        public virtual double SafeA => A;
+
+        public virtual double SafeB => B;
+
         public Func<double, double> ProbabilityFunction { get; }
 
         public Segment(double a, double b, Func<double, double> probabilityFunction)
@@ -49,17 +53,48 @@ namespace RandomVariablesLibraryNew.Segments
                 return new List<Point>();
             }
 
-            var step = (xMax - xMin) / (numberOfPoints - 1);
-
-            for (var i = 0; i < numberOfPoints; i++)
+            var leftRightEpsilon = Math.Pow(10, -20);
+            if (xMin == 0)
             {
-                var x = xMin + i * step;
+                xMin = xMin + leftRightEpsilon;
+            }
+            if (xMax == 0)
+            {
+                xMax = xMax - leftRightEpsilon;
+            }
+
+            List<double> args = null;
+            if (this is SegmentWithPole segmentWithPole)
+            {
+                if (xMax / xMin > Math.Pow(10, 2) && segmentWithPole.LeftPole)
+                {
+                    args = LogSpace(Math.Log10(xMin), Math.Log10(xMax), numberOfPoints).ToList();
+                }
+                else if (xMin / xMax > Math.Pow(10, 2) && !segmentWithPole.LeftPole)
+                {
+                    args = LogSpace(Math.Log10(xMin), Math.Log10(xMax), numberOfPoints).ToList();
+                    args = args.Select(arg => arg * (-1)).ToList();
+                }
+            }
+            else
+            {
+                args = LinSpace(xMin, xMax, numberOfPoints).ToList();
+            }
+
+            foreach(var x in args)
+            {
                 var y = ProbabilityFunction(x);
                 points.Add(new Point(x, y));
             }
 
-            //var args = Enumerable.Range(0, numberOfPoints)
-            //    .Select(i => xMin + (xMax - xMin) * ((double)i / (numberOfPoints - 1)));
+            //var step = (xMax - xMin) / (numberOfPoints - 1);
+            //for (var i = 0; i < numberOfPoints; i++)
+            //{
+            //    var x = xMin + i * step;
+            //    var y = ProbabilityFunction(x);
+            //    points.Add(new Point(x, y));
+            //}
+
 
             return points;
         }
@@ -91,5 +126,49 @@ namespace RandomVariablesLibraryNew.Segments
         protected virtual double FindLeftPoint() => A;
 
         protected virtual double FindRightPoint() => B;
+
+
+        private IEnumerable<double> LogSpace(double start, double stop, int num, bool endpoint = true, double numericBase = 10.0d)
+        {
+            var y = LinSpace(start, stop, num: num, endpoint: endpoint);
+            return Power(y, numericBase);
+        }
+
+        private IEnumerable<double> Arange(double start, int count)
+        {
+            return Enumerable.Range((int)start, count).Select(v => (double)v);
+        }
+
+        private IEnumerable<double> Power(IEnumerable<double> exponents, double baseValue = 10.0d)
+        {
+            return exponents.Select(v => Math.Pow(baseValue, v));
+        }
+
+        private IEnumerable<double> LinSpace(double start, double stop, int num, bool endpoint = true)
+        {
+            var result = new List<double>();
+            if (num <= 0)
+            {
+                return result;
+            }
+
+            if (endpoint)
+            {
+                if (num == 1)
+                {
+                    return new List<double>() { start };
+                }
+
+                var step = (stop - start) / ((double)num - 1.0d);
+                result = Arange(0, num).Select(v => (v * step) + start).ToList();
+            }
+            else
+            {
+                var step = (stop - start) / (double)num;
+                result = Arange(0, num).Select(v => (v * step) + start).ToList();
+            }
+
+            return result;
+        }
     }
 }
