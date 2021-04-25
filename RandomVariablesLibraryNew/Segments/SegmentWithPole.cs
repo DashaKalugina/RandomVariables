@@ -44,5 +44,10 @@ namespace RandomVariablesLibraryNew.Segments
                 return B == 0 ? 0 : B - Math.Abs(B) * double.Epsilon;
             }
         }
+
+        public override Segment ToInterpolatedSegment()
+        {
+            return new InterpolatedSegmentWithPole(A, B, ProbabilityFunction, LeftPole);
+        }
     }
 }

@@ -23,6 +23,7 @@ namespace RandomVariablesLibraryNew.Interpolators
             A = a;
             B = b;
             AdaptiveInit(f);
+            AdaptiveInterpolate();
         }
 
         public override void InitWeights()
@@ -53,7 +54,19 @@ namespace RandomVariablesLibraryNew.Interpolators
 
         protected override double[] GetIncrementalNodes(int n)
         {
+            var nodes = new List<double>();
 
+            var current = 1;
+
+            while(current < n - 1)
+            {
+                var node = 0.5 * (A + B) - 0.5 * (B - A) * Math.Cos(current * Math.PI / (n - 1));
+                nodes.Add(node);
+
+                current += 2;
+            }
+
+            return nodes.ToArray();
         }
     }
 }

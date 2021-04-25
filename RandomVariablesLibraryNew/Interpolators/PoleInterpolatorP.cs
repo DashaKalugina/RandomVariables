@@ -42,9 +42,16 @@ namespace RandomVariablesLibraryNew.Interpolators
             Init(wrappedF, XtInv(Orig_A), XtInv(Orig_B));
         }
 
+        public override double InterpolateAt(double x)
+        {
+            var result = Sign * (Math.Exp(Math.Abs(base.InterpolateAt(XtInv(x)))) - 1);
+
+            return result;
+        }
+
         public double[] GetNodes()
         {
-
+            return default;
         }
 
         public double[] Spec_F(double[] args)

@@ -18,20 +18,58 @@ namespace RandomVariablesLibraryNew.Interpolators
 
         public int n { get; set; }
 
-        public AdaptiveBarycentricInterpolator(double[] xs, double[] ys, double[] weights = null)
-        {
-            Xs = xs;
-            Ys = ys;
+        //public AdaptiveBarycentricInterpolator(double[] xs, double[] ys, double[] weights = null)
+        //{
+        //    Xs = xs;
+        //    Ys = ys;
 
-            if (weights == null)
+        //    if (weights == null)
+        //    {
+        //        InitWeights();
+        //    }
+        //    else
+        //    {
+        //        Weights = weights;
+        //    }
+        //}
+
+        public AdaptiveBarycentricInterpolator() { }
+
+        public virtual double InterpolateAt(double x)
+        {
+            var xDiff = Xs.Select(xs => x - xs).ToList();
+            for (var i = 0; i < xDiff.Count; i++)
             {
-                InitWeights();
+                if (xDiff[i] == 0)
+                {
+                    xDiff[i] = 1;
+                }
             }
-            else
+
+            var temp = new List<double>();
+            for (var i = 0; i < xDiff.Count; i++)
             {
-                Weights = weights;
+                temp.Add(Weights[i] / xDiff[i]);
             }
+
+            var scalarProduct = 0.0; // num
+            for (var i = 0; i < temp.Count; i++)
+            {
+                scalarProduct += temp[i] * Ys[i];
+            }
+
+            var tempSum = temp.Sum(); // den
+
+            if (tempSum == 0)
+            {
+                // обработать
+            }
+
+            var result = scalarProduct / tempSum;
+
+            return result;
         }
+
 
         public abstract double[] GetNodes(int n);
 
@@ -46,7 +84,7 @@ namespace RandomVariablesLibraryNew.Interpolators
             Xs = GetNodes(n);
             Ys = F(Xs);
 
-            InitBarycentricInterpolator();
+            InitBarycentricInterpolator(Xs, Ys);
         }
 
         protected void AdaptiveInterpolate()
@@ -57,7 +95,8 @@ namespace RandomVariablesLibraryNew.Interpolators
             while(n <= maxN)
             {
                 var new_N = 2 * n - 1;
-                var new_Xs = 
+                var new_Xs = GetIncrementalNodes(new_N);
+                var new_Ys = F(new_Xs); // AdaptiveInterpolator
             }
         }
 
@@ -66,9 +105,12 @@ namespace RandomVariablesLibraryNew.Interpolators
             return default;
         }
 
-        private void InitBarycentricInterpolator()
+        private void InitBarycentricInterpolator(double[] xs, double[] ys)
         {
-            InitWeights();
+            if (Weights == null)
+            {
+                InitWeights();
+            }
         }
 
         public virtual void InitWeights()

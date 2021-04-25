@@ -77,6 +77,7 @@
     <Compile Include="Interpolators\ChebyshevInterpolatorNoL.cs" />
     <Compile Include="Interpolators\PoleInterpolatorP.cs" />
     <Compile Include="ProductConvolutionCalculator.cs" />
+    <Compile Include="Segments\InterpolatedSegmentWithPole.cs" />
     <Compile Include="Segments\SegmentWithPole.cs" />
     <Compile Include="SumConvolutionCalculator.cs" />
     <Compile Include="ConvolutionRunner.cs" />
