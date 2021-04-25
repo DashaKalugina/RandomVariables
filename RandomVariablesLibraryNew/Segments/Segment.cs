@@ -72,7 +72,7 @@ namespace RandomVariablesLibraryNew.Segments
                 }
                 else if (xMin / xMax > Math.Pow(10, 2) && !segmentWithPole.LeftPole)
                 {
-                    args = LogSpace(Math.Log10(xMin), Math.Log10(xMax), numberOfPoints).ToList();
+                    args = LogSpace(Math.Log10(Math.Abs(xMin)), Math.Log10(Math.Abs(xMax)), numberOfPoints).ToList();
                     args = args.Select(arg => arg * (-1)).ToList();
                 }
             }

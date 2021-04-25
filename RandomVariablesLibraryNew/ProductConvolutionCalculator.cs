@@ -67,6 +67,8 @@ namespace RandomVariablesLibraryNew
                     if (poleAtZero)
                     {
                         newSegment = new SegmentWithPole(breaks[i], breaks[i + 1], func, true);
+                        //var segmentWithPole = new SegmentWithPole(breaks[i], breaks[i + 1], func, true);
+                        //newSegment = segmentWithPole.ToInterpolatedSegment();
                     }
                     else
                     {

@@ -144,7 +144,7 @@ namespace RandomVariablesLibraryNew
                     }
                 }
 
-                integralValue = IntegralCalculator.Integrate(min, max, func1);
+                integralValue += IntegralCalculator.Integrate(min, max, func1);
                 integralValue += integral1;
             }
 

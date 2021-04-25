@@ -29,7 +29,7 @@ namespace RandomVariablesLibraryNew
         {
             get
             {
-                var segment = Segments.SingleOrDefault(s => x >= s.A && x <= s.B);
+                var segment = Segments.SingleOrDefault(s => x >= s.A && x < s.B);
                 if (segment != null)
                 {
                     return segment[x];
