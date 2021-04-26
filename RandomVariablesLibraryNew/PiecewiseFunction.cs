@@ -136,6 +136,17 @@ namespace RandomVariablesLibraryNew
                     splittedFunction.AddSegment(new PlusInfinitySegment(a, segment.ProbabilityFunction));
                 }
                 // добавить обработку полюсов
+                else if (segment is SegmentWithPole segmentWithPole)
+                {
+                    if (segmentWithPole.LeftPole && a == segment.A)
+                    {
+                        splittedFunction.AddSegment(new SegmentWithPole(a, b, segment.ProbabilityFunction, true));
+                    }
+                    else if (!segmentWithPole.LeftPole && b == segment.B)
+                    {
+                        splittedFunction.AddSegment(new SegmentWithPole(a, b, segment.ProbabilityFunction, false));
+                    }
+                }
                 else
                 {
                     splittedFunction.AddSegment(new Segment(a, b, segment.ProbabilityFunction));

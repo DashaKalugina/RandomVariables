@@ -21,7 +21,7 @@ namespace RandomVariablesLibraryNew
             var poleAtZero = f_0 > 0 && g_0 > 0;
 
             var breaks = GetResultBreakPoints(fSplitted, gSplitted);
-            breaks.Sort();
+            
             Func<double, double, double> operation = (a, b) => a * b;
 
             var resultPiecewiseFunction = new PiecewiseFunction();
@@ -160,6 +160,8 @@ namespace RandomVariablesLibraryNew
                     }
                 }
             }
+
+            breakPointProducts.Sort();
 
             return breakPointProducts;
         }

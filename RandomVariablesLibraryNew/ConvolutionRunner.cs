@@ -153,6 +153,53 @@ namespace RandomVariablesLibraryNew
             return integralValue;
         }
 
+        /// <summary>
+        /// Метод вычисляет значение свертки функций плотности в точке x для операции деления
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        public double GetConvolutionValueAtPointQuotient(double x)
+        {
+            double integralValue = default;
+
+            foreach (var tuple in SegmentTuplesList)
+            {
+                var segment1 = tuple.Item1;
+                var segment2 = tuple.Item2;
+
+                var func = GetQuotientFunc(segment1, segment2, x);
+
+                double min;
+                double max;
+
+                if (x == 0)
+                {
+                    min = segment2.A;
+                    max = segment2.B;
+                }
+                else
+                {
+                    var min1 = segment1.A / x;
+                    var max1 = segment1.B / x;
+
+                    min = Math.Min(min1, max1);
+                    max = Math.Max(min1, max1);
+
+                    min = Math.Max(segment2.A, min);
+                    max = Math.Min(segment2.B, max);
+                }
+
+                integralValue += IntegralCalculator.Integrate(min, max, func);
+            }
+
+            return integralValue;
+        }
+
+        private Func<double, double> GetQuotientFunc(Segment segment1, Segment segment2, double x)
+        {
+            return (t) => segment1[x * t] * segment2[t] * Math.Abs(t);
+        }
+
         private Func<double, double> GetProductFunc1(Segment segment1, Segment segment2, double x)
         {
             return (t) => t == 0 ? 0 : segment1[t] * segment2[x / t] * 1.0 / Math.Abs(t);

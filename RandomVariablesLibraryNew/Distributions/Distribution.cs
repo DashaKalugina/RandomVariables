@@ -33,6 +33,11 @@ namespace RandomVariablesLibraryNew.Distributions
             return new ProductDistribution(distr1, distr2);
         }
 
+        public static QuotientDistribution operator /(Distribution distr1, Distribution distr2)
+        {
+            return new QuotientDistribution(distr1, distr2);
+        }
+
         public string SummaryInfo => PiecewisePDF.SummaryInfo;
 
         public List<Point> GetPDFDataForPlot(double xMin, double xMax, int numberOfPoints = 1000)
