@@ -22,7 +22,15 @@ namespace RandomVariablesLibraryNew
 
         public void AddSegment(Segment segment)
         {
-            Segments.Add(segment);
+            var index = Segments.FindIndex(s => segment.B <= s.A);
+            if (index == -1)
+            {
+                Segments.Add(segment);
+            }
+            else
+            {
+                Segments.Insert(index, segment);
+            }
         }
 
         public double this[double x]
@@ -60,11 +68,60 @@ namespace RandomVariablesLibraryNew
 
             var breakPoints = new List<BreakPoint>();
 
-            breakPoints.Add(new BreakPoint(Segments[0].A, false, false));
+            var firstBreak = new BreakPoint(Segments[0].A, false, false);
+            breakPoints.Add(firstBreak);
+
             foreach(var segment in Segments)
             {
                 // сюда будет добавлена обработка полюсов и бесконечностей
-                breakPoints.Add(new BreakPoint(segment.B, false, false));
+                if (segment is SegmentWithPole segmentWithPole1 && segmentWithPole1.LeftPole)
+                {
+                    firstBreak.PositivePole = true;
+                }
+                if (segment is SegmentWithPole segmentWithPole2 && !segmentWithPole2.LeftPole)
+                {
+                    breakPoints.Add(new BreakPoint(segment.B, true, false));
+                }
+                else
+                {
+                    breakPoints.Add(new BreakPoint(segment.B, false, false));
+                }
+            }
+
+            var firstSegment = Segments.First();
+            var isFirstSegmentWithLeftPole = firstSegment is SegmentWithPole firstSegmentWithPole
+                                        && firstSegmentWithPole.LeftPole;
+
+            var continuityEps = Math.Pow(10, 2) * double.Epsilon; // params.pole_detection.continuity_eps
+
+            if (!double.IsInfinity(firstSegment.A) && (isFirstSegmentWithLeftPole || firstSegment[firstSegment.A] > continuityEps))
+            {
+                breakPoints[0].Сontinuous = false;
+            }
+
+            var lastSegment = Segments.Last();
+            var isLastSegmentWithRightPole = lastSegment is SegmentWithPole lastSegmentWithPole
+                                        && !lastSegmentWithPole.LeftPole;
+            if (!double.IsInfinity(lastSegment.B) && (isLastSegmentWithRightPole || lastSegment[lastSegment.B] > continuityEps))
+            {
+                breakPoints[0].Сontinuous = false;
+            }
+
+            var segmentsWithoutFirst = Segments.GetRange(1, Segments.Count - 1);
+            for (var i = 1; i < segmentsWithoutFirst.Count; i++)
+            {
+                var segi = segmentsWithoutFirst[i];
+
+                var isSegmentWithRightPole = Segments[i] is SegmentWithPole segWithPole1 && !segWithPole1.LeftPole;
+                var isCurrentSegmentWithLeftPole = segi is SegmentWithPole segWithPole2 && segWithPole2.LeftPole;
+
+                if (!isSegmentWithRightPole && !isCurrentSegmentWithLeftPole)
+                {
+                    if (Math.Abs(Segments[i][Segments[i].B] - segi[segi.A]) > continuityEps)
+                    {
+                        breakPoints[i + 1].Сontinuous = false;
+                    }
+                }
             }
 
             return breakPoints;

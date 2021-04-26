@@ -75,9 +75,9 @@ namespace RandomVariablesLibraryNew.Distributions
             return new SumDistribution(distr1, distr2);
         }
 
-        public static SumDistribution operator -(Distribution distr1, Distribution distr2)
+        public static DifferenceDistribution operator -(Distribution distr1, Distribution distr2)
         {
-            return new SumDistribution(distr1, distr2);
+            return new DifferenceDistribution(distr1, distr2);
         }
 
         public static ProductDistribution operator *(Distribution distr1, Distribution distr2)
