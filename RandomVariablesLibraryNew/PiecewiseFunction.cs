@@ -39,6 +39,18 @@ namespace RandomVariablesLibraryNew
             }
         }
 
+        public PiecewiseFunction GetShiftedAndScaledCopy(double shift = 0, double scale = 1)
+        {
+            var shiftedScaledFunction = new PiecewiseFunction();
+
+            foreach(var segment in Segments)
+            {
+                shiftedScaledFunction.AddSegment(segment.ShiftAndScale(shift, scale));
+            }
+
+            return shiftedScaledFunction;
+        }
+
         public List<BreakPoint> GetBreakPointsExtended()
         {
             if (Segments.Count == 0)
@@ -156,7 +168,7 @@ namespace RandomVariablesLibraryNew
             return splittedFunction;
         }
 
-        #region Characteristics
+        #region Characteristics and Summary Info
 
         /// <summary>
         /// Вычисляет математическое ожидание
@@ -235,8 +247,6 @@ namespace RandomVariablesLibraryNew
             return centralMoment;
         }
 
-        #endregion
-
         public string SummaryInfo
         {
             get
@@ -252,6 +262,8 @@ namespace RandomVariablesLibraryNew
                 return stringBuilder.ToString();
             }
         }
+
+        #endregion
 
     }
 }

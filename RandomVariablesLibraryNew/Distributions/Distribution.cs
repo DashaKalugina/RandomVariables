@@ -13,6 +13,8 @@ namespace RandomVariablesLibraryNew.Distributions
         /// </summary>
         public PiecewiseFunction PiecewisePDF;
 
+        #region Characteristics and Summary
+
         public double Mean => PiecewisePDF.Mean;
 
         public double Variance => PiecewisePDF.Variance;
@@ -23,22 +25,9 @@ namespace RandomVariablesLibraryNew.Distributions
 
         public double Kurtosis => PiecewisePDF.Kurtosis;
 
-        public static SumDistribution operator +(Distribution distr1, Distribution distr2)
-        {
-            return new SumDistribution(distr1, distr2);
-        }
-
-        public static ProductDistribution operator *(Distribution distr1, Distribution distr2)
-        {
-            return new ProductDistribution(distr1, distr2);
-        }
-
-        public static QuotientDistribution operator /(Distribution distr1, Distribution distr2)
-        {
-            return new QuotientDistribution(distr1, distr2);
-        }
-
         public string SummaryInfo => PiecewisePDF.SummaryInfo;
+
+        #endregion
 
         public List<Point> GetPDFDataForPlot(double xMin, double xMax, int numberOfPoints = 1000)
         {
@@ -78,5 +67,59 @@ namespace RandomVariablesLibraryNew.Distributions
         }
 
         public abstract double GetNewRandomValue();
+
+        #region Override Operators
+
+        public static SumDistribution operator +(Distribution distr1, Distribution distr2)
+        {
+            return new SumDistribution(distr1, distr2);
+        }
+
+        public static SumDistribution operator -(Distribution distr1, Distribution distr2)
+        {
+            return new SumDistribution(distr1, distr2);
+        }
+
+        public static ProductDistribution operator *(Distribution distr1, Distribution distr2)
+        {
+            return new ProductDistribution(distr1, distr2);
+        }
+
+        public static QuotientDistribution operator /(Distribution distr1, Distribution distr2)
+        {
+            return new QuotientDistribution(distr1, distr2);
+        }
+
+        public static ShiftedScaledDistribution operator +(Distribution distribution, double number)
+        {
+            return new ShiftedScaledDistribution(distribution, shift: number);
+        }
+
+        public static ShiftedScaledDistribution operator -(Distribution distribution, double number)
+        {
+            return new ShiftedScaledDistribution(distribution, shift: (-1) * number);
+        }
+
+        public static Distribution operator *(Distribution distribution, double number)
+        {
+            if (number == 1)
+            {
+                return distribution;
+            }
+
+            return new ShiftedScaledDistribution(distribution, scale: number);
+        }
+
+        public static Distribution operator /(Distribution distribution, double number)
+        {
+            if (number == 1)
+            {
+                return distribution;
+            }
+
+            return new ShiftedScaledDistribution(distribution, scale: 1 / number);
+        }
+
+        #endregion
     }
 }

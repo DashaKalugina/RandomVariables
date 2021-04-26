@@ -37,5 +37,20 @@ namespace RandomVariablesLibraryNew.Segments
 
             return leftPoint;
         }
+
+        public override Segment ShiftAndScale(double shift, double scale)
+        {
+            Func<double, double> newProbabilityFunction = (x) =>
+            {
+                return Math.Abs(1 / scale) * ProbabilityFunction((x - shift) * 1 / scale);
+            };
+
+            if (scale > 0)
+            {
+                return new MinusInfinitySegment(B * scale + shift, newProbabilityFunction);
+            }
+
+            return new PlusInfinitySegment(B * scale + shift, newProbabilityFunction);
+        }
     }
 }

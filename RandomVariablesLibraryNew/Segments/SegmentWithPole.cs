@@ -44,5 +44,26 @@ namespace RandomVariablesLibraryNew.Segments
                 return B == 0 ? 0 : B - Math.Abs(B) * double.Epsilon;
             }
         }
+
+        public override Segment ShiftAndScale(double shift, double scale)
+        {
+            Func<double, double> newProbabilityFunction = (x) =>
+            {
+                return Math.Abs(1 / scale) * ProbabilityFunction((x - shift) * 1 / scale);
+            };
+
+            if (scale > 0)
+            {
+                var newA = A * scale + shift;
+                var newB = B * scale + shift;
+                return new SegmentWithPole(newA, newB, newProbabilityFunction, LeftPole);
+            }
+            else
+            {
+                var newA = B * scale + shift;
+                var newB = A * scale + shift;
+                return new SegmentWithPole(newA, newB, newProbabilityFunction, !LeftPole);
+            }
+        }
     }
 }

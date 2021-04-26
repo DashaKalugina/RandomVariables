@@ -68,8 +68,10 @@
     <Compile Include="ChiSquareTest.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="ConvolutionCalculators\QuotientConvolutionCalculator.cs" />
+    <Compile Include="Distributions\DifferenceDistribution.cs" />
     <Compile Include="Distributions\ProductDistribution.cs" />
     <Compile Include="Distributions\QuotientDistribution.cs" />
+    <Compile Include="Distributions\ShiftedScaledDistribution.cs" />
     <Compile Include="Generators\ExponentialGenerator.cs" />
     <Compile Include="Generators\NormalGenerator.cs" />
     <Compile Include="Generators\NormalRandom.cs" />

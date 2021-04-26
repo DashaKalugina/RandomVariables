@@ -16,7 +16,7 @@ namespace RandomVariablesLibraryNew.Segments
 
         public virtual double SafeB => B;
 
-        public Func<double, double> ProbabilityFunction { get; set; } // убрать set, добавлено для InterpolatedSegmentWithPole
+        public Func<double, double> ProbabilityFunction { get; }
 
         public Segment(double a, double b, Func<double, double> probabilityFunction)
         {
@@ -127,11 +127,23 @@ namespace RandomVariablesLibraryNew.Segments
 
         protected virtual double FindRightPoint() => B;
 
-        public virtual Segment ToInterpolatedSegment()
+        public virtual Segment ShiftAndScale(double shift, double scale)
         {
-            throw new NotImplementedException();
-        }
+            var a = scale > 0 ? A : B;
+            var b = scale > 0 ? B : A;
 
+            var newA = a * scale + shift;
+            var newB = b * scale + shift;
+
+            Func<double, double> newProbabilityFunction = (x) =>
+            {
+                return Math.Abs(1 / scale) * ProbabilityFunction((x - shift) * 1 / scale);
+            };
+
+            var shiftedScaledSegment = new Segment(newA, newB, newProbabilityFunction);
+
+            return shiftedScaledSegment;
+        }
 
         private IEnumerable<double> LogSpace(double start, double stop, int num, bool endpoint = true, double numericBase = 10.0d)
         {
