@@ -65,6 +65,10 @@ namespace RandomVariablesLibraryNew
                     {
                         integralValue += IntegralCalculator.CalculateFromMinusInfinityIntegral(maxX, fun1);
                     } 
+                    else if (double.IsInfinity(minY))
+                    {
+                        integralValue += IntegralCalculator.Integrate(double.NegativeInfinity, double.PositiveInfinity, fun2);
+                    }
                     else
                     {
                         integralValue += IntegralCalculator.CalculateToPositiveInfinityIntegral(minY, fun2);

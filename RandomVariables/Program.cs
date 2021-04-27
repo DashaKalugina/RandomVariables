@@ -1,7 +1,10 @@
-﻿using RandomVariablesLibraryNew.Distributions;
+﻿using RandomVariablesLibraryNew.Distributions.Custom;
+using RandomVariablesLibraryNew.Distributions.Standard;
+using RandomVariablesLibraryNew.Generators;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -13,95 +16,89 @@ namespace RandomVariables
     {
         static void Main(string[] args)
         {
-            // Равномерное распределение
-            var uniformVariable = new UniformDistribution(0, 1);
+            //var x = new double[]
+            //{
+            //    -1, 0, 1, 2, 3, 4
+            //};
+            //var y = new double[x.Length];
 
-            Console.WriteLine("\nРавномерное распределение");
-            Console.WriteLine($"{uniformVariable.SummaryInfo}");
+            //for (var i = 0; i < x.Length; i++)
+            //{
+            //    y[i] = Math.Pow(x[i], 2);
+            //}
 
-            var series11 = MakeSeries(uniformVariable.GetPDFDataForPlot(-0.1, 1.1).ToArray());
-            var chart11 = MakeChart(series11, "x", "f(x)", "График f(x) равномерного распределения (A = 0, B = 1)", 
-                SeriesChartType.Column, 0.1, -0.1, 1.1);
+            //alglib.spline1dinterpolant splineInterpolant;
+            //alglib.spline1dbuildcubic(x, y, out splineInterpolant);
 
-            //var series12 = MakeSeries(uniformVariable.DistributionFunctionValues);
-            //var chart12 = MakeChart(series12, "x", "f(x)", "График F(x) равномерного распределения (A = 0, B = 1)", 
-            //    SeriesChartType.Point, 0.1, -0.1, 1.1);
+            //var point = 0.5;
+            //var result = alglib.spline1dcalc(splineInterpolant, point);
 
-            // Нормальное распределение
-            var normalVariable = new NormalDistribution(0, 1);
 
-            Console.WriteLine("\nНормальное распределение");
-            Console.WriteLine($"{normalVariable.SummaryInfo}");
 
-            var series21 = MakeSeries(normalVariable.GetPDFDataForPlot(-5, 5).ToArray());
-            var chart21 = MakeChart(series21, "x", "f(x)", 
-                "График f(x) стандартного нормального распределения (Mu = 0, Sigma = 1)", 
-                SeriesChartType.Column, 1, -5, 5);
-
-            //var series22 = MakeSeries(normalVariable.DistributionFunctionValues);
-            //var chart22 = MakeChart(series22, "x", "f(x)", 
-            //    "График F(x) стандартного нормального распределения (Mu = 0, Sigma = 1)", 
-            //    SeriesChartType.Point, 1, -6, 6);
-
-            // Экспоненциальное распределение
-            var exponentialVariable = new ExponentialDistribution(0.5);
-
-            Console.WriteLine("\nЭкспоненциальное распределение");
-            Console.WriteLine($"{exponentialVariable.SummaryInfo}");
-
-            var series31 = MakeSeries(exponentialVariable.GetPDFDataForPlot(0, 28).ToArray());
-            var chart31 = MakeChart(series31, "x", "f(x)", "График f(x) экспоненциального распределения (Lambda = 0.5)",
-                SeriesChartType.Column, 2, 0, 28);
-
-            //var series32 = MakeSeries(exponentialVariable.DistributionFunctionValues);
-            //var chart32 = MakeChart(series32, "x", "F(x)", "График F(x) экспоненциального распределения (Lambda = 0.5)",
-            //    SeriesChartType.Point, 2, 0, 28);
-
-            //Сумма равномерных от 0 до 1
-            var uniformVar1 = new UniformDistribution(0, 1);
-            var uniformVar2 = new UniformDistribution(0, 1);
-
-            var sumOfUniformVars = uniformVar1 + uniformVar2;
-
-            Console.WriteLine("\nСумма двух равномерных СВ от 0 до 1");
-            Console.WriteLine(sumOfUniformVars.SummaryInfo);
-
-            var series41 = MakeSeries(sumOfUniformVars.GetPDFDataForPlot(-1, 3).ToArray());
-            var chart41 = MakeChart(series41, "x", "f(x)", "График f(x) суммы равномерных СВ от 0 до 1",
-                SeriesChartType.Column, 0.2, -0.2, 2.2);
-
-            //var series42 = MakeSeries(sumOfUniformVars.DistributionFunctionValues);
-            //var chart42 = MakeChart(series42, "x", "F(x)", "График F(x) суммы равномерных СВ от 0 до 1",
-            //    SeriesChartType.Point, 0.2, -0.2, 2.2);
 
             // Произведение двух стандартных нормальных распределений
-            var normalVar1 = new NormalDistribution(0, 1);
-            var normalVar2 = new NormalDistribution(0, 1);
+            //var normalVar1 = new NormalDistribution(0, 1);
+            //var normalVar2 = new NormalDistribution(0, 1);
 
-            var productOfNormalVars = normalVar1 + normalVar2;
+            //var productOfNormalVars = uniformVar1 * uniformVar2 + uniformVar4 * uniformVar5;
 
-            Console.WriteLine("\nПроизведение двух стандартных нормальных распределений");
-            Console.WriteLine(productOfNormalVars.SummaryInfo);
+            //var L0 = new UniformDistribution(9, 10);
+            //var L1 = new UniformDistribution(11, 12);
+            //var dt = new NormalDistribution(1, 2);
+            //var productOfNormalVars = (L1 / L0 - 1) / dt;
 
-            var series51 = MakeSeries(productOfNormalVars.GetPDFDataForPlot(-26, 26).ToArray());
-            var chart51 = MakeChart(series51, "x", "f(x)", "График f(x) произведения двух норм. СВ с Mu = 0, Sigma = 1",
-                SeriesChartType.Column, 2, -26, 26);
+            //var productOfNormalVars = (normalVar1 / normalVar2);
 
-            //var series52 = MakeSeries(productOfNormalVars.DistributionFunctionValues);
-            //var chart52 = MakeChart(series52, "x", "F(x)", "График F(x) произведения двух норм. СВ с Mu = 0, Sigma = 1",
-            //    SeriesChartType.Point, 2, -26, 26);
+            //Console.WriteLine("\nПроизведение двух стандартных нормальных распределений");
+            //Console.WriteLine(productOfNormalVars.SummaryInfo);
+
+            //string path = @"c:\RandomData\data.txt";
+            //var readText = File.ReadAllLines(path);
+            //var variableValues = readText.Select(text => double.Parse(text)).ToArray();
+
+            var variableValues = new List<double>();
+            for (var i = 0; i < 10000000; i++)
+            {
+                variableValues.Add(NormalGenerator.Next(0, 1));
+                //variableValues.Add(UniformGenerator.Next(0, 1));
+            }
+
+            var minValue1 = variableValues.Min();
+            var maxValue1 = variableValues.Max();
+
+            var minValue2 = variableValues.Min();
+            var maxValue2 = variableValues.Max();
+
+            //var customDistribution = new CustomDistribution(variableValues.ToArray()) * new CustomDistribution(variableValues.ToArray());
+            var customDistribution = new CustomDistribution(variableValues.ToArray()) * new NormalDistribution(0, 1);
+
+            Console.WriteLine("\nПользовательское распределение");
+            Console.WriteLine(customDistribution.SummaryInfo);
+
+            var data = customDistribution.GetPDFDataForPlot(-14, 14).ToArray();
+            //var data = customDistribution.ProbabilityFunctionValues;
+
+            var series51 = MakeSeries(data);
+
+            var chart51 = MakeChart(series51, "x", "f(x)", "График f(x) пользовательского распределения",
+                SeriesChartType.Column, 2, -14, 14);
+
+            //////////////////////////////////////////////////////
+            ///
+            var normalVar1 = new NormalDistribution(0, 1) * new NormalDistribution(0, 1);
+            //var normalVar1 = new UniformDistribution(0, 1) + new UniformDistribution(0, 1);
+
+            var series61 = MakeSeries(normalVar1.GetPDFDataForPlot(-14, 14).ToArray());
+
+            var chart61 = MakeChart(series61, "x", "f(x)", "График f(x) нормального распределения",
+                SeriesChartType.Column, 2, -14, 14);
+
+            ////////////////////////////////////////////////////
+
 
             var forms = MakeFormsFromCharts(new List<Chart> { 
-                chart11, 
-                //chart12, 
-                chart21, 
-                //chart22, 
-                chart31, 
-                //chart32, 
-                chart41, 
-                //chart42, 
-                chart51, 
-                //chart52 
+                chart51,
+                chart61
             });
 
 			Application.EnableVisualStyles();
@@ -132,7 +129,7 @@ namespace RandomVariables
 			chart.ChartAreas.Add(new ChartArea());
 
             series.ChartType = chartType;
-            //series.ChartType = SeriesChartType.Point;
+            series.ChartType = SeriesChartType.Point; //
             series.Color = Color.RoyalBlue;
 			series.BorderWidth = 3;
 
@@ -144,6 +141,7 @@ namespace RandomVariables
 			Axis ay = new Axis();
 			ay.Title = axisYTitle;
 			chart.ChartAreas[0].AxisY = ay;
+            //chart.ChartAreas[0].AxisY.Interval = 1;
             chart.ChartAreas[0].AxisX.Interval = interval;
             chart.ChartAreas[0].AxisX.Minimum = min;
             chart.ChartAreas[0].AxisX.Maximum = max;

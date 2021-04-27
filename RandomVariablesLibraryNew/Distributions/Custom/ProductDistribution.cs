@@ -1,4 +1,5 @@
-﻿using RandomVariablesLibraryNew.Distributions.Base;
+﻿using RandomVariablesLibraryNew.ConvolutionCalculators;
+using RandomVariablesLibraryNew.Distributions.Base;
 
 namespace RandomVariablesLibraryNew.Distributions.Custom
 {

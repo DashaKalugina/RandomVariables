@@ -17,13 +17,25 @@ namespace RandomVariablesLibraryNew.ConvolutionCalculators
 
             if (breaks.Count > 1 && double.IsNegativeInfinity(breaks[0].X))
             {
-                var appropriateSegments = FindSegments(f, g, breaks[1].X - 1);
+                //var appropriateSegments = FindSegments(f, g, breaks[1].X - 1);
+                var appropriateSegments = double.IsPositiveInfinity(breaks[1].X)
+                    ? FindSegments(f, g, Math.Pow(10, 20))
+                    : FindSegments(f, g, breaks[1].X - 1);
+
                 var convRunner = new ConvolutionRunner(appropriateSegments);
 
                 Func<double, double> probabilityFunction = (x) => convRunner.GetConvolutionValueAtPoint(x);
 
-                var minusInfSegment = new MinusInfinitySegment(breaks[1].X, probabilityFunction);
-                resultPiecewiseFunction.AddSegment(minusInfSegment);
+                if (double.IsPositiveInfinity(breaks[1].X))
+                {
+                    var fromInfToInfSegment = new FromInfinityToInfinitySegment(probabilityFunction);
+                    resultPiecewiseFunction.AddSegment(fromInfToInfSegment);
+                }
+                else
+                {
+                    var minusInfSegment = new MinusInfinitySegment(breaks[1].X, probabilityFunction);
+                    resultPiecewiseFunction.AddSegment(minusInfSegment);
+                }
 
                 breaks.RemoveAt(0);
             }

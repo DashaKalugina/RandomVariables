@@ -45,6 +45,9 @@
     <Reference Include="Accord.Statistics, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
       <HintPath>..\RandomVariables\packages\Accord.Statistics.3.8.0\lib\net462\Accord.Statistics.dll</HintPath>
     </Reference>
+    <Reference Include="alglib.net, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\RandomVariables\packages\alglib.net.3.17.0\lib\net47\alglib.net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Solver.Foundation, Version=3.0.2.10889, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\RandomVariables\packages\Microsoft.Solver.Foundation.3.1.0\lib\Microsoft.Solver.Foundation.dll</HintPath>
     </Reference>
@@ -68,6 +71,7 @@
     <Compile Include="ChiSquareTest.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="ConvolutionCalculators\QuotientConvolutionCalculator.cs" />
+    <Compile Include="Distributions\Custom\CustomDistribution.cs" />
     <Compile Include="Distributions\Custom\DifferenceDistribution.cs" />
     <Compile Include="Distributions\Custom\ProductDistribution.cs" />
     <Compile Include="Distributions\Custom\QuotientDistribution.cs" />
@@ -77,6 +81,7 @@
     <Compile Include="Generators\NormalRandom.cs" />
     <Compile Include="Generators\UniformGenerator.cs" />
     <Compile Include="ConvolutionCalculators\ProductConvolutionCalculator.cs" />
+    <Compile Include="Segments\FromInfinityToInfinitySegment.cs" />
     <Compile Include="Segments\SegmentWithPole.cs" />
     <Compile Include="ConvolutionCalculators\SumConvolutionCalculator.cs" />
     <Compile Include="ConvolutionRunner.cs" />

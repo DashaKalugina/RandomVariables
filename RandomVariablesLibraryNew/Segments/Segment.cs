@@ -42,6 +42,7 @@ namespace RandomVariablesLibraryNew.Segments
         {
             var points = new List<Point>();
 
+
             var leftPoint = FindLeftPoint();
             var rightPoint = FindRightPoint();
 
