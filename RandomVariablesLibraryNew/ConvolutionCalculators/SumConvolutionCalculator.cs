@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RandomVariablesLibraryNew
+namespace RandomVariablesLibraryNew.ConvolutionCalculators
 {
     public static class SumConvolutionCalculator
     {

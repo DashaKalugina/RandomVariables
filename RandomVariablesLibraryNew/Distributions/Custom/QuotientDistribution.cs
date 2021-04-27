@@ -1,11 +1,7 @@
 ﻿using RandomVariablesLibraryNew.ConvolutionCalculators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RandomVariablesLibraryNew.Distributions.Base;
 
-namespace RandomVariablesLibraryNew.Distributions
+namespace RandomVariablesLibraryNew.Distributions.Custom
 {
     public class QuotientDistribution : Distribution
     {

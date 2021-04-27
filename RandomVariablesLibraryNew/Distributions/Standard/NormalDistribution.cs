@@ -1,12 +1,9 @@
-﻿using RandomVariablesLibraryNew.Generators;
+﻿using RandomVariablesLibraryNew.Distributions.Base;
+using RandomVariablesLibraryNew.Generators;
 using RandomVariablesLibraryNew.Segments;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RandomVariablesLibraryNew.Distributions
+namespace RandomVariablesLibraryNew.Distributions.Standard
 {
     /// <summary>
     /// Класс нормального распределения

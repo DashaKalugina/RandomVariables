@@ -1,10 +1,8 @@
-﻿using System;
+﻿using RandomVariablesLibraryNew.Distributions.Custom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RandomVariablesLibraryNew.Distributions
+namespace RandomVariablesLibraryNew.Distributions.Base
 {
     public abstract class Distribution
     {
