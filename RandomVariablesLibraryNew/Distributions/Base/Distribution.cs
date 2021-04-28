@@ -27,9 +27,20 @@ namespace RandomVariablesLibraryNew.Distributions.Base
 
         #endregion
 
-        public List<Point> GetPDFDataForPlot(double xMin, double xMax, int numberOfPoints = 1000)
+        public List<Point> GetPDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 1000)
         {
             var resultPoints = new List<Point>();
+
+            if (!xMin.HasValue)
+            {
+                xMin = PiecewisePDF.Segments.First().FindLeftPoint();
+            }
+
+            if (!xMax.HasValue)
+            {
+                xMax = PiecewisePDF.Segments.Last().FindRightPoint();
+            }
+
             var segments = PiecewisePDF.Segments.OrderBy(s => s.A);
             foreach(var segment in PiecewisePDF.Segments)
             {

@@ -18,6 +18,10 @@ namespace RandomVariablesLibraryNew.Distributions.Custom
 
         private int NumberOfIntervals { get; }
 
+        public double MinValue { get; }
+
+        public double MaxValue { get; }
+
         private alglib.spline1dinterpolant InterpolantModel { get; set; }
 
         public CustomDistribution(double[] variableValues)
@@ -27,6 +31,9 @@ namespace RandomVariablesLibraryNew.Distributions.Custom
             //NumberOfIntervals = (int)Math.Ceiling(1 + 3.322 * Math.Log10(dataCount));
             NumberOfIntervals = 100;
 
+            MinValue = variableValues.Min();
+            MaxValue = variableValues.Max();
+
             CalculateProbabilities(variableValues);
 
             CalculateDistributionFunctionValues();
@@ -34,69 +41,26 @@ namespace RandomVariablesLibraryNew.Distributions.Custom
 
             InitInterpolantModel();
 
-            //var a = double.NegativeInfinity;
-            //var b = double.PositiveInfinity;
-
-            PiecewisePDF = new PiecewiseFunction();
-
-            Func<double, double> probabilityFunction = (x) => GetProbabilityFunctionValueAtPoint(x);
-
-            var minValue = variableValues.Min();
-            var maxValue = variableValues.Max();
-
-            if (minValue < 0)
-            {
-                if (maxValue <= 0)
-                {
-                    PiecewisePDF.AddSegment(new Segment(minValue, maxValue, probabilityFunction));
-                }
-                else
-                {
-                    PiecewisePDF.AddSegment(new Segment(minValue, 0, probabilityFunction));
-                    PiecewisePDF.AddSegment(new Segment(0, maxValue, probabilityFunction));
-                }
-            }
-            else
-            {
-                PiecewisePDF.AddSegment(new Segment(minValue, maxValue, probabilityFunction));
-            }
-            //PiecewisePDF.AddSegment(new MinusInfinitySegment(-1, probabilityFunction));
-            //PiecewisePDF.AddSegment(new Segment(-1, 0, probabilityFunction));
-            //PiecewisePDF.AddSegment(new Segment(0, 1, probabilityFunction));
-            //PiecewisePDF.AddSegment(new PlusInfinitySegment(1, probabilityFunction));
-        }
-
-        private double GetProbabilityFunctionValueAtPoint(double x)
-        {
-            var existingPoint = ProbabilityFunctionValues.SingleOrDefault(p => p.X.Equals(x));
-            if (existingPoint != null)
-            {
-                return existingPoint.Y;
-            }
-
-            var interpolatedValue = alglib.spline1dcalc(InterpolantModel, x);
-            return interpolatedValue;
+            ConstructPiecewisePDF(variableValues);
         }
 
         private void CalculateProbabilities(double[] variableValues)
         {
             Probabilities = new Point[NumberOfIntervals + 1];
 
-            var min = variableValues.Min();
-            var max = variableValues.Max();
-            var intervalLength = (max - min) / NumberOfIntervals;
+            var intervalLength = (MaxValue - MinValue) / NumberOfIntervals;
 
             var counts = new int[NumberOfIntervals + 1];
             foreach (var value in variableValues)
             {
-                var index = (int)((value - min) / intervalLength);
+                var index = (int)((value - MinValue) / intervalLength);
 
                 counts[index]++;
             }
 
             for (int i = 0; i < Probabilities.Length; i++)
             {
-                var variableValue = min + i * intervalLength;
+                var variableValue = MinValue + i * intervalLength;
                 var probability = (double)counts[i] / variableValues.Length;
 
                 Probabilities[i] = new Point(variableValue, probability);
@@ -149,6 +113,45 @@ namespace RandomVariablesLibraryNew.Distributions.Custom
             alglib.spline1dinterpolant spline1Dinterpolant;
             alglib.spline1dbuildcubic(xData, yData, out spline1Dinterpolant);
             InterpolantModel = spline1Dinterpolant;
+        }
+
+        private void ConstructPiecewisePDF(double[] variableValues)
+        {
+            PiecewisePDF = new PiecewiseFunction();
+
+            Func<double, double> probabilityFunction = (x) => GetProbabilityFunctionValueAtPoint(x);
+
+            var minValue = variableValues.Min();
+            var maxValue = variableValues.Max();
+
+            if (minValue < 0)
+            {
+                if (maxValue <= 0)
+                {
+                    PiecewisePDF.AddSegment(new Segment(minValue, maxValue, probabilityFunction));
+                }
+                else
+                {
+                    PiecewisePDF.AddSegment(new Segment(minValue, 0, probabilityFunction));
+                    PiecewisePDF.AddSegment(new Segment(0, maxValue, probabilityFunction));
+                }
+            }
+            else
+            {
+                PiecewisePDF.AddSegment(new Segment(minValue, maxValue, probabilityFunction));
+            }
+        }
+
+        private double GetProbabilityFunctionValueAtPoint(double x)
+        {
+            var existingPoint = ProbabilityFunctionValues.SingleOrDefault(p => p.X.Equals(x));
+            if (existingPoint != null)
+            {
+                return existingPoint.Y;
+            }
+
+            var interpolatedValue = alglib.spline1dcalc(InterpolantModel, x);
+            return interpolatedValue;
         }
 
         public override double GetNewRandomValue()

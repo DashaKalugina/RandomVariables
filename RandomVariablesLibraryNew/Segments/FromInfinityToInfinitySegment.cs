@@ -14,12 +14,12 @@ namespace RandomVariablesLibraryNew.Segments
 
         }
 
-        protected override double FindLeftPoint()
+        public override double FindLeftPoint()
         {
             return (-1) * Math.Pow(10, 20);
         }
 
-        protected override double FindRightPoint()
+        public override double FindRightPoint()
         {
             return Math.Pow(10, 20);
         }

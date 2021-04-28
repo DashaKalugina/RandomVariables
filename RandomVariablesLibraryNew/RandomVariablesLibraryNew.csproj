@@ -69,7 +69,6 @@
   <ItemGroup>
     <Compile Include="BreakPoint.cs" />
     <Compile Include="ChiSquareTest.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="ConvolutionCalculators\QuotientConvolutionCalculator.cs" />
     <Compile Include="Distributions\Custom\CustomDistribution.cs" />
     <Compile Include="Distributions\Custom\DifferenceDistribution.cs" />
@@ -90,7 +89,6 @@
     <Compile Include="Distributions\Standard\NormalDistribution.cs" />
     <Compile Include="Distributions\Custom\SumDistribution.cs" />
     <Compile Include="Distributions\Standard\UniformDistribution.cs" />
-    <Compile Include="InfinityType.cs" />
     <Compile Include="IntegralCalculator.cs" />
     <Compile Include="PiecewiseFunction.cs" />
     <Compile Include="Point.cs" />

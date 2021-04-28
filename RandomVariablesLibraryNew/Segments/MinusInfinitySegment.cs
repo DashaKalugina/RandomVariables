@@ -17,7 +17,7 @@ namespace RandomVariablesLibraryNew.Segments
             
         }
 
-        protected override double FindLeftPoint()
+        public override double FindLeftPoint()
         {
             var leftPoint = B - 1;
             var leftPointY = ProbabilityFunction(leftPoint);
