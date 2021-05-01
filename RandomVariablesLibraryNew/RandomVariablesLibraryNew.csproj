@@ -75,6 +75,11 @@
     <Compile Include="Distributions\Custom\ProductDistribution.cs" />
     <Compile Include="Distributions\Custom\QuotientDistribution.cs" />
     <Compile Include="Distributions\Custom\ShiftedScaledDistribution.cs" />
+    <Compile Include="Distributions\Standard\CauchyDistribution.cs" />
+    <Compile Include="Distributions\Standard\ChiSquareDistribution.cs" />
+    <Compile Include="Distributions\Standard\FDistribution.cs" />
+    <Compile Include="Distributions\Standard\GammaDistribution.cs" />
+    <Compile Include="Distributions\Standard\WeibullDistribution.cs" />
     <Compile Include="Generators\ExponentialGenerator.cs" />
     <Compile Include="Generators\NormalGenerator.cs" />
     <Compile Include="Generators\NormalRandom.cs" />

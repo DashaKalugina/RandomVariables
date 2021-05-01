@@ -26,6 +26,11 @@ namespace RandomVariablesLibraryNew.Distributions.Standard
         {
             Lambda = lambda;
 
+            InitPiecewisePDF();
+        }
+
+        protected void InitPiecewisePDF()
+        {
             PiecewisePDF = new PiecewiseFunction();
 
             PiecewisePDF.AddSegment(new Segment(0, 1, ProbabilityFunction));

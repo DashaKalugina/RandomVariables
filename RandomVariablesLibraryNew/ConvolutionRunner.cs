@@ -86,15 +86,46 @@ namespace RandomVariablesLibraryNew
                     }
                 }
                 else if ((double.IsInfinity(segment1.A) && double.IsInfinity(segment2.A))
-                    || double.IsInfinity(segment1.B) && double.IsInfinity(segment2.B))
+                    || (double.IsInfinity(segment1.B) && double.IsInfinity(segment2.B)))
                 {
+                    var midX = (minX + maxX) / 2;
+                    var midY = (minY + maxY) / 2;
 
+                    double integralOverX = default;
+                    double integralOverY = default;
+
+                    if (double.IsInfinity(segment1.A) && double.IsInfinity(segment2.A))
+                    {
+                        integralOverX = IntegrateWithGuess(fun1, midX, maxX);
+                        integralOverY = IntegrateWithGuess(fun2, midY, maxY);
+                    }
+                    else
+                    {
+                        integralOverX = IntegrateWithGuess(fun1, minX, midX);
+                        integralOverY = IntegrateWithGuess(fun2, minY, midY);
+                    }
+
+                    integralValue += integralOverX;
+                    integralValue += integralOverY;
                 }
             }
 
             //var func1 = GetFunc1(
 
             return integralValue;
+        }
+
+        private double IntegrateWithGuess(Func<double, double> func, double a, double b)
+        {
+            var funcInA = func(a);
+            var funcInB = func(b);
+
+            if (funcInA > funcInB)
+            {
+                return IntegralCalculator.IntegrateWithVariableChange(a, b, func);
+            }
+
+            return IntegralCalculator.IntegrateWithVariableChange(a, b, func);
         }
 
         /// <summary>

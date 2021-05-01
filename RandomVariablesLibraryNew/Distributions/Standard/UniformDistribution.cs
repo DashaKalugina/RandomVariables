@@ -30,6 +30,11 @@ namespace RandomVariablesLibraryNew.Distributions.Standard
             A = a;
             B = b;
 
+            InitPiecewisePDF();
+        }
+
+        protected void InitPiecewisePDF()
+        {
             PiecewisePDF = new PiecewiseFunction();
             PiecewisePDF.AddSegment(new Segment(A, B, ProbabilityFunction));
         }

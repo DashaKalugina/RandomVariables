@@ -18,10 +18,17 @@ namespace RandomVariablesLibraryNew.Distributions.Custom
                 throw new Exception("Параметр scale не может быть равным нулю");
             }
 
+            Distribution = distribution;
+
             Shift = shift;
             Scale = scale;
 
-            PiecewisePDF = distribution.PiecewisePDF.GetShiftedAndScaledCopy(shift, scale);
+            InitPiecewisePDF();
+        }
+
+        protected void InitPiecewisePDF()
+        {
+            PiecewisePDF = Distribution.PiecewisePDF.GetShiftedAndScaledCopy(Shift, Scale);
         }
 
         public override double GetNewRandomValue()

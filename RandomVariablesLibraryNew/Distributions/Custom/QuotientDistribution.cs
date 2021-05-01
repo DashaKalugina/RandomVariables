@@ -14,7 +14,12 @@ namespace RandomVariablesLibraryNew.Distributions.Custom
             Distr1 = distr1;
             Distr2 = distr2;
 
-            PiecewisePDF = QuotientConvolutionCalculator.Calculate(distr1.PiecewisePDF, distr2.PiecewisePDF);
+            InitPiecewisePDF();
+        }
+
+        protected void InitPiecewisePDF()
+        {
+            PiecewisePDF = QuotientConvolutionCalculator.Calculate(Distr1.PiecewisePDF, Distr2.PiecewisePDF);
         }
 
         public override double GetNewRandomValue()

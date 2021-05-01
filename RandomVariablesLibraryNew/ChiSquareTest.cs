@@ -8,6 +8,7 @@ using Accord.Statistics;
 using Test = Accord.Statistics.Testing.ChiSquareTest;
 using CenterSpace.NMath.Stats;
 using RandomVariablesLibraryNew.Distributions;
+using RandomVariablesLibraryNew.Distributions.Base;
 
 namespace RandomVariablesLibraryNew
 {

@@ -121,7 +121,7 @@ namespace RandomVariablesLibraryNew
         /// <param name="to">Конец интервала интегрирования</param>
         /// <param name="integrand">Подынтегральная функция</param>
         /// <returns></returns>
-        private static double IntegrateWithVariableChange(double from, double to, Func<double, double> integrand)
+        public static double IntegrateWithVariableChange(double from, double to, Func<double, double> integrand)
         {
             // Случай 1. Интеграл с бесконечным верхним пределом [a; +inf).
             var isInfiniteUpperLimit = !double.IsInfinity(from) && double.IsPositiveInfinity(to);

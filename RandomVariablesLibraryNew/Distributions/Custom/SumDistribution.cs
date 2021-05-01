@@ -13,8 +13,13 @@ namespace RandomVariablesLibraryNew.Distributions.Custom
         {
             Distr1 = distr1;
             Distr2 = distr2;
-            
-            PiecewisePDF = SumConvolutionCalculator.Calculate(distr1.PiecewisePDF, distr2.PiecewisePDF);
+
+            InitPiecewisePDF();
+        }
+
+        protected void InitPiecewisePDF()
+        {
+            PiecewisePDF = SumConvolutionCalculator.Calculate(Distr1.PiecewisePDF, Distr2.PiecewisePDF);
         }
 
         public override double GetNewRandomValue()

@@ -27,6 +27,11 @@ namespace RandomVariablesLibraryNew.Distributions.Standard
             Mu = mu;
             Sigma = sigma;
 
+            InitPiecewisePDF();
+        }
+
+        protected void InitPiecewisePDF()
+        {
             PiecewisePDF = new PiecewiseFunction();
 
             var b1 = Mu - Sigma;
