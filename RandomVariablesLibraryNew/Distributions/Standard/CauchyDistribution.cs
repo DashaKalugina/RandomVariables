@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CauchyGenerator = Accord.Statistics.Distributions.Univariate.CauchyDistribution;
 
 namespace RandomVariablesLibraryNew.Distributions.Standard
 {
@@ -28,7 +29,7 @@ namespace RandomVariablesLibraryNew.Distributions.Standard
             };
         }
 
-        public CauchyDistribution(double gamma, double center)
+        public CauchyDistribution(double center, double gamma)
         {
             if (gamma <= 0)
             {
@@ -55,7 +56,7 @@ namespace RandomVariablesLibraryNew.Distributions.Standard
 
         public override double GetNewRandomValue()
         {
-            throw new NotImplementedException();
+            return CauchyGenerator.Random(Center, Gamma);
         }
     }
 }

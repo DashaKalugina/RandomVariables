@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WeibullGenerator = Accord.Statistics.Distributions.Univariate.WeibullDistribution;
 
 namespace RandomVariablesLibraryNew.Distributions.Standard
 {
@@ -25,6 +26,10 @@ namespace RandomVariablesLibraryNew.Distributions.Standard
 
                 if (x == 0)
                 {
+                    //if (K < 1)
+                    //{
+                    //    return double.PositiveInfinity;
+                    //}
                     if (K == 1)
                     {
                         return 1;
@@ -68,7 +73,7 @@ namespace RandomVariablesLibraryNew.Distributions.Standard
 
         public override double GetNewRandomValue()
         {
-            throw new NotImplementedException();
+            return WeibullGenerator.Random(K, Lambda);
         }
     }
 }

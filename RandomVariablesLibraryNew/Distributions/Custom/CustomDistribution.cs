@@ -10,13 +10,13 @@ namespace RandomVariablesLibraryNew.Distributions.Custom
 {
     public class CustomDistribution : Distribution
     {
-        private Point[] Probabilities { get; set; }
-
         public Point[] ProbabilityFunctionValues { get; set; }
 
         private Point[] DistributionFunctionValues { get; set; }
 
         private int NumberOfIntervals { get; }
+
+        private double IntervalLength { get; }
 
         public double MinValue { get; }
 
@@ -28,80 +28,66 @@ namespace RandomVariablesLibraryNew.Distributions.Custom
         {
             // Определяем кол-во интервалов для разбиения по формуле Стерджеса
             var dataCount = variableValues.Length;
-            //NumberOfIntervals = (int)Math.Ceiling(1 + 3.322 * Math.Log10(dataCount));
-            NumberOfIntervals = 100;
+            NumberOfIntervals = (int)Math.Ceiling(1 + 3.322 * Math.Log10(dataCount));
+            //NumberOfIntervals = 100;
 
             MinValue = variableValues.Min();
             MaxValue = variableValues.Max();
 
-            CalculateProbabilities(variableValues);
+            IntervalLength = (MaxValue - MinValue) / NumberOfIntervals;
 
-            CalculateDistributionFunctionValues();
-            CalculateProbabilityFunctionValues();
+            MinValue = MinValue + IntervalLength;
+            MaxValue = MaxValue - IntervalLength;
+
+            var breakPoints = GetBreakPoints();
+            CalculateDistributionFunctionValues(variableValues, breakPoints);
+            CalculateProbabilityFunctionValues(breakPoints);
 
             InitInterpolantModel();
 
-            ConstructPiecewisePDF(variableValues);
+            InitPiecewisePDF();
         }
 
-        private void CalculateProbabilities(double[] variableValues)
+        private double[] GetBreakPoints()
         {
-            Probabilities = new Point[NumberOfIntervals + 1];
+            //var min = MinValue + IntervalLength;
 
-            var intervalLength = (MaxValue - MinValue) / NumberOfIntervals;
-
-            var counts = new int[NumberOfIntervals + 1];
-            foreach (var value in variableValues)
+            var breakPoints = new double[NumberOfIntervals];
+            for (var i = 0; i < NumberOfIntervals; i++)
             {
-                var index = (int)((value - MinValue) / intervalLength);
-
-                counts[index]++;
+                breakPoints[i] = MinValue + i * IntervalLength;
             }
 
-            for (int i = 0; i < Probabilities.Length; i++)
-            {
-                var variableValue = MinValue + i * intervalLength;
-                var probability = (double)counts[i] / variableValues.Length;
-
-                Probabilities[i] = new Point(variableValue, probability);
-            }
-
-            var probabilitiesSum = Probabilities.Select(p => p.Y).Sum();
-            if (Math.Abs(1 - probabilitiesSum) > Math.Pow(10, -6))
-            {
-                throw new Exception("Сумма вероятностей должна быть равна единице!");
-            }
+            return breakPoints;
         }
 
-        private void CalculateProbabilityFunctionValues()
+        private void CalculateDistributionFunctionValues(double[] variableValues, double[] breakPoints)
         {
-            // пересмотреть вычисление на интервалах
-
-            var length = NumberOfIntervals + 1;
-            ProbabilityFunctionValues = new Point[length];
-
-            for (var i = 0; i < length; i++)
+            var counts = new int[NumberOfIntervals];
+            DistributionFunctionValues = new Point[NumberOfIntervals];
+            for (var i = 0; i < breakPoints.Length; i++)
             {
-                var funcValue = i > 0 && i < length - 1 && Probabilities[i].Y != 0
-                    ? Probabilities[i].Y / (Probabilities[i + 1].X - Probabilities[i].X)
-                    : Probabilities[i].Y;
-                ProbabilityFunctionValues[i] = new Point(Probabilities[i].X, funcValue);
+                var currentValue = breakPoints[i];
+
+                var count = variableValues.Where(v => v <= currentValue).Count();
+                counts[i] = count;
+                DistributionFunctionValues[i] = new Point(currentValue, (double)count / variableValues.Length);
             }
+
+            //if (counts.Sum() != variableValues.Length)
+            //{
+            //    throw new Exception("Неверное вычисление количества попаданий СВ в интервалы!");
+            //}
         }
 
-        private void CalculateDistributionFunctionValues()
+        private void CalculateProbabilityFunctionValues(double[] breakPoints)
         {
-            var length = NumberOfIntervals + 1;
-            DistributionFunctionValues = new Point[length];
+            ProbabilityFunctionValues = new Point[breakPoints.Length - 1];
 
-            var sum = 0.0;
-            for (var i = 0; i < length; i++)
+            for (var i = 0; i < breakPoints.Length - 1; i++)
             {
-                var distributionFuncValue = i == 0 ? 0 : i == length - 1 ? 1 : sum;
-
-                DistributionFunctionValues[i] = new Point(Probabilities[i].X, distributionFuncValue);
-
-                sum += Probabilities[i].Y;
+                var funcValue = (DistributionFunctionValues[i + 1].Y - DistributionFunctionValues[i].Y) / IntervalLength;
+                ProbabilityFunctionValues[i] = new Point(breakPoints[i], funcValue);
             }
         }
 
@@ -115,30 +101,27 @@ namespace RandomVariablesLibraryNew.Distributions.Custom
             InterpolantModel = spline1Dinterpolant;
         }
 
-        private void ConstructPiecewisePDF(double[] variableValues)
+        private void InitPiecewisePDF()
         {
             PiecewisePDF = new PiecewiseFunction();
 
             Func<double, double> probabilityFunction = (x) => GetProbabilityFunctionValueAtPoint(x);
 
-            var minValue = variableValues.Min();
-            var maxValue = variableValues.Max();
-
-            if (minValue < 0)
+            if (MinValue < 0)
             {
-                if (maxValue <= 0)
+                if (MaxValue <= 0)
                 {
-                    PiecewisePDF.AddSegment(new Segment(minValue, maxValue, probabilityFunction));
+                    PiecewisePDF.AddSegment(new Segment(MinValue, MaxValue, probabilityFunction));
                 }
                 else
                 {
-                    PiecewisePDF.AddSegment(new Segment(minValue, 0, probabilityFunction));
-                    PiecewisePDF.AddSegment(new Segment(0, maxValue, probabilityFunction));
+                    PiecewisePDF.AddSegment(new Segment(MinValue, 0, probabilityFunction));
+                    PiecewisePDF.AddSegment(new Segment(0, MaxValue, probabilityFunction));
                 }
             }
             else
             {
-                PiecewisePDF.AddSegment(new Segment(minValue, maxValue, probabilityFunction));
+                PiecewisePDF.AddSegment(new Segment(MinValue, MaxValue, probabilityFunction));
             }
         }
 

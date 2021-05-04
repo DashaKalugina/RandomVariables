@@ -1,10 +1,7 @@
+using System;
 using NUnit.Framework;
 using RandomVariablesLibraryNew;
-using RandomVariablesLibraryNew.Distributions;
-//using RandomVariablesLibrary.Distributions;
-
-using System;
-using System.Collections.Generic;
+using RandomVariablesLibraryNew.Distributions.Standard;
 
 namespace RandomVariables.Tests
 {
@@ -15,51 +12,9 @@ namespace RandomVariables.Tests
         {
         }
 
-        [TestCase(0.0, 1.0)]
-        [TestCase(-1.0, 10.0)]
-        [TestCase(1, 5)]
-        [TestCase(-100.4, 76)]
-        [TestCase(-1728.5, -18.5)]
-        public void GenerateUniformVariableAndCheckCharacteristics(double a, double b)
-        {
-            var uniformDistributedVariable = new UniformDistribution(a, b);
+        
 
-            var mean = (a + b) / 2; // мат. ожидание
-            var variance = Math.Pow(b - a, 2) / 12; // дисперсия
-            var standardDeviation = Math.Sqrt(variance); // СКО
-            var skewness = 0; // коэффициент асимметрии
-            var kurtosis = (double)(-1) * 6 / 5; // эксцесс
-
-            var delta = Math.Pow(10, -3);
-            Assert.AreEqual(mean, uniformDistributedVariable.Mean, delta);
-            Assert.AreEqual(variance, uniformDistributedVariable.Variance, delta);
-            Assert.AreEqual(standardDeviation, uniformDistributedVariable.StandardDeviation, delta);
-            Assert.AreEqual(skewness, uniformDistributedVariable.Skewness, delta);
-            Assert.AreEqual(kurtosis, uniformDistributedVariable.Kurtosis, delta);
-        }
-
-        [TestCase(0, 1)]
-        [TestCase(0, 0.8)]
-        [TestCase(1, 1)]
-        [TestCase(1, 0.2)]
-        [TestCase(-2, 0.5)]
-        public void GenerateNormalVariableAndCheckCharacteristics(double mu, double sigma)
-        {
-            var normalDistributedVariable = new NormalDistribution(mu, sigma);
-
-            var mean = mu; // мат. ожидание
-            var variance = Math.Pow(sigma, 2); // дисперсия
-            var standardDeviation = sigma; // СКО
-            var skewness = 0; // коэффициент асимметрии
-            var kurtosis = 0; // эксцесс
-
-            var delta = Math.Pow(10, -4);
-            Assert.AreEqual(mean, normalDistributedVariable.Mean, delta);
-            Assert.AreEqual(variance, normalDistributedVariable.Variance, delta);
-            Assert.AreEqual(standardDeviation, normalDistributedVariable.StandardDeviation, delta);
-            Assert.AreEqual(skewness, normalDistributedVariable.Skewness, delta);
-            Assert.AreEqual(kurtosis, normalDistributedVariable.Kurtosis, delta);
-        }
+        
 
         /// <summary>
         /// Тест вычисления несобственного интеграла к +inf.
@@ -76,10 +31,10 @@ namespace RandomVariables.Tests
 
             Func<double, double> func2 = (x) => x / (Math.Pow(x, 4) + 1);
             var res2 = IntegralCalculator.Integrate(0, double.PositiveInfinity, func2);
-            Assert.AreEqual(Math.PI/4, res2, abs);
+            Assert.AreEqual(Math.PI / 4, res2, abs);
 
             Func<double, double> func3 = (x) => 1 / (Math.Pow(x, 2) + 4 * x + 5);
-            var res3 = IntegralCalculator.Integrate(- 1, double.PositiveInfinity, func3);
+            var res3 = IntegralCalculator.Integrate(-1, double.PositiveInfinity, func3);
             Assert.AreEqual(Math.PI / 4, res3, abs);
 
             Func<double, double> func4 = (x) => x * Math.Pow(Math.E, (-1) * x * x);
@@ -112,161 +67,57 @@ namespace RandomVariables.Tests
 
             Func<double, double> func2 = (x) => 1 / (x * x + 2 * x + 8);
             var res2 = IntegralCalculator.Integrate(double.NegativeInfinity, double.PositiveInfinity, func2);
-            Assert.AreEqual(Math.PI/Math.Sqrt(7), res2, abs);
+            Assert.AreEqual(Math.PI / Math.Sqrt(7), res2, abs);
         }
 
-        [TestCase(0.5)]
-        [TestCase(1.0)]
-        [TestCase(1.5)]
-        public void GenerateExponentialVariableAndCheckCharacteristics(double lambda)
-        {
-            var exponentialVariable = new ExponentialDistribution(lambda);
 
-            var mean = Math.Pow(lambda, -1); // мат. ожидание
-            var variance = Math.Pow(lambda, -2); // дисперсия
-            var standardDeviation = Math.Sqrt(variance); // СКО
-            var skewness = 2.0; // коэффициент асимметрии
-            var kurtosis = 6.0; // эксцесс
+        //[TestCase(1, 1)]
+        //public void WeibullDistributionChiSquareTest(double k, double lambda)
+        //{
+        //    var count = default(int);
+        //    var pValue = 0.05;
+        //    var experimentsCount = 20;
 
-            var delta = Math.Pow(10, -3);
-            Assert.AreEqual(mean, exponentialVariable.Mean, delta);
-            Assert.AreEqual(variance, exponentialVariable.Variance, delta);
-            Assert.AreEqual(standardDeviation, exponentialVariable.StandardDeviation, delta);
-            Assert.AreEqual(skewness, exponentialVariable.Skewness, delta);
-            Assert.AreEqual(kurtosis, exponentialVariable.Kurtosis, delta);
-        }
+        //    for (var i = 0; i < experimentsCount; i++)
+        //    {
+        //        try
+        //        {
+        //            var weibullDistribution = new WeibullDistribution(k, lambda);
+        //            var test = ChiSquareTest.Test(weibullDistribution);
+        //            if (!test)
+        //            {
+        //                throw new Exception();
+        //            }
+        //        }
+        //        catch
+        //        {
+        //            count++;
+        //            Assert.IsTrue(count <= pValue * experimentsCount, $"Упало на попытке {i+1}");
+        //        }
+        //    }
+        //}
 
-        [Test]
-        public void TestSumDistributionOfUniformVariables()
-        {
-            var var1 = new UniformDistribution(0, 1);
-            var var2 = new UniformDistribution(0, 1);
-
-            var sum = var1 + var2;
-
-            var delta = Math.Pow(10, -3);
-        }
-
-        [Test]
-        public void TestSumDistributionOfNormalVariables()
-        {
-            var var1 = new NormalDistribution(0, 1);
-            var var2 = new NormalDistribution(0, 1);
-
-            var sum = var1 + var2;
-
-            var delta = Math.Pow(10, -3);
-        }
-
-        [TestCase(0.0, 1.0)]
-        [TestCase(-1.0, 10.0)]
-        [TestCase(1, 5)]
-        [TestCase(-100.4, 76)]
-        [TestCase(-1728.5, -18.5)]
-        public void UniformDistributionChiSquareTest(double a, double b)
-        {
-            var uniformDistribution = new UniformDistribution(a, b);
-
-            var test = ChiSquareTest.Test(uniformDistribution);
-            Assert.IsTrue(test);
-        }
-
+        [TestCase(0, 0.5)]
         [TestCase(0, 1)]
-        [TestCase(0, 0.8)]
+        [TestCase(0, 2)]
+        [TestCase(-2, 1)]
+        public void CauchyDistributionChiSquareTest(double center, double gamma)
+        {
+            var cauchyDistribution = new CauchyDistribution(gamma, center);
+
+            var test = ChiSquareTest.Test(cauchyDistribution);
+            Assert.IsTrue(test);
+        }
+
+        [TestCase(0.5, 1)]
         [TestCase(1, 1)]
-        [TestCase(1, 0.2)]
-        [TestCase(-2, 0.5)]
-        public void NormalDistributionChiSquareTest(double mu, double sigma)
+        [TestCase(1.5, 1)]
+        [TestCase(5, 1)]
+        public void WeibullDistributionChiSquareTest(double k, double lambda)
         {
-            var normalDistributedVariable = new NormalDistribution(mu, sigma);
+            var weibullDistribution = new WeibullDistribution(k, lambda);
+            var test = ChiSquareTest.Test(weibullDistribution);
 
-            var test = ChiSquareTest.Test(normalDistributedVariable);
-            Assert.IsTrue(test);
-        }
-
-        [TestCase(0.0, 1.0)]
-        [TestCase(-1.0, 10.0)]
-        [TestCase(1, 5)]
-        [TestCase(-100.4, 76)]
-        [TestCase(-1728.5, -18.5)]
-        public void SumOfTwoUniformDistributionsChiSquareTest(double a, double b)
-        {
-            var distr1 = new UniformDistribution(a, b);
-            var distr2 = new UniformDistribution(a, b);
-
-            var sum = distr1 + distr2;
-
-            var test = ChiSquareTest.Test(sum);
-            Assert.IsTrue(test);
-        }
-
-        [TestCase(0, 1)]
-        [TestCase(0, 0.8)]
-        [TestCase(1, 1)]
-        [TestCase(1, 0.2)]
-        [TestCase(-2, 0.5)]
-        public void SumOfTwoNormalDistributionsChiSquareTest(double mu, double sigma)
-        {
-            var distr1 = new NormalDistribution(mu, sigma);
-            var distr2 = new NormalDistribution(mu, sigma);
-
-            var sum = distr1 + distr2;
-
-            var test = ChiSquareTest.Test(sum);
-            Assert.IsTrue(test);
-        }
-
-        [TestCase(0.0, 1.0)]
-        [TestCase(-1.0, 10.0)]
-        [TestCase(1, 5)]
-        [TestCase(-100.4, 76)]
-        [TestCase(-1728.5, -18.5)]
-        public void ProductOfTwoUniformDistributionsChiSquareTest(double a, double b)
-        {
-            var distr1 = new UniformDistribution(a, b);
-            var distr2 = new UniformDistribution(a, b);
-
-            var sum = distr1 * distr2;
-
-            var test = ChiSquareTest.Test(sum);
-            Assert.IsTrue(test);
-        }
-
-        [TestCase(0, 1, 2)]
-        [TestCase(0, 1, 3)]
-        [TestCase(0, 1, 4)]
-        public void ProductOfTwoUniform2(double a, double b, int count)
-        {
-            var distr1 = new UniformDistribution(a, b);
-            var distr2 = new UniformDistribution(a, b);
-
-            var product = distr1 * distr2;
-            if (count > 2)
-            {
-                for (var i = 0; i < count - 2; i++)
-                {
-                    var distr = new UniformDistribution(a, b);
-                    product = product * distr;
-                }
-            }
-
-            var test = ChiSquareTest.Test(product);
-            Assert.IsTrue(test);
-        }
-
-        [TestCase(0, 1)]
-        [TestCase(0, 0.8)]
-        [TestCase(1, 1)]
-        [TestCase(1, 0.2)]
-        [TestCase(-2, 0.5)]
-        public void ProductOfTwoNormalDistributionsChiSquareTest(double mu, double sigma)
-        {
-            var distr1 = new NormalDistribution(mu, sigma);
-            var distr2 = new NormalDistribution(mu, sigma);
-
-            var sum = distr1 * distr2;
-
-            var test = ChiSquareTest.Test(sum);
             Assert.IsTrue(test);
         }
     }

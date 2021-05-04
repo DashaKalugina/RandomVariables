@@ -27,6 +27,11 @@ namespace RandomVariablesLibraryNew.Distributions.Base
 
         #endregion
 
+        public Distribution()
+        {
+            //InitPiecewisePDF();
+        }
+
         public List<Point> GetPDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 1000)
         {
             var resultPoints = new List<Point>();
@@ -76,6 +81,8 @@ namespace RandomVariablesLibraryNew.Distributions.Base
         }
 
         public abstract double GetNewRandomValue();
+
+        //protected abstract void InitPiecewisePDF();
 
         #region Override Operators
 
