@@ -46,11 +46,55 @@ namespace RandomVariablesLibraryNew.Distributions.Base
                 xMax = PiecewisePDF.Segments.Last().FindRightPoint();
             }
 
-            var segments = PiecewisePDF.Segments.OrderBy(s => s.A);
+            //var segments = PiecewisePDF.Segments.OrderBy(s => s.A);
             foreach(var segment in PiecewisePDF.Segments)
             {
-                var segmentPoints = segment.GetPoints(xMin, xMax, numberOfPoints);
-                resultPoints.AddRange(segmentPoints);
+                var args = segment.GetPoints(xMin, xMax, numberOfPoints);
+
+                var points = new List<Point>();
+                foreach (var x in args)
+                {
+                    var y = segment[x];
+                    points.Add(new Point(x, y));
+                }
+
+                resultPoints.AddRange(points);
+            }
+
+            return resultPoints;
+        }
+
+        public List<Point> GetCDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 1000)
+        {
+            var resultPoints = new List<Point>();
+
+            if (!xMin.HasValue)
+            {
+                xMin = PiecewisePDF.Segments.First().FindLeftPoint();
+            }
+
+            if (!xMax.HasValue)
+            {
+                xMax = PiecewisePDF.Segments.Last().FindRightPoint();
+            }
+
+            //var segments = PiecewisePDF.Segments.OrderBy(s => s.A);
+            var integralValue = default(double);
+            var leftValue = double.NegativeInfinity;
+            foreach (var segment in PiecewisePDF.Segments)
+            {
+                var args = segment.GetPoints(xMin, xMax, numberOfPoints);
+
+                var points = new List<Point>();
+                foreach (var arg in args)
+                {
+                    integralValue += IntegralCalculator.Integrate(leftValue, arg, (x) => segment[x]);
+                    points.Add(new Point(arg, integralValue));
+
+                    leftValue = arg;
+                }
+
+                resultPoints.AddRange(points);
             }
 
             return resultPoints;

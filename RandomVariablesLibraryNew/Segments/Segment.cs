@@ -38,10 +38,8 @@ namespace RandomVariablesLibraryNew.Segments
             }
         }
 
-        public List<Point> GetPoints(double? xMin, double? xMax, int numberOfPoints)
+        public List<double> GetPoints(double? xMin, double? xMax, int numberOfPoints)
         {
-            var points = new List<Point>();
-
             var leftPoint = FindLeftPoint();
             var rightPoint = FindRightPoint();
 
@@ -55,7 +53,7 @@ namespace RandomVariablesLibraryNew.Segments
 
             if (xMin >= xMax)
             {
-                return new List<Point>();
+                return new List<double>();
             }
 
             var leftRightEpsilon = Math.Pow(10, -20);
@@ -68,7 +66,7 @@ namespace RandomVariablesLibraryNew.Segments
                 xMax = xMax - leftRightEpsilon;
             }
 
-            List<double> args = null;
+            var args = new List<double>();
             if (this is SegmentWithPole segmentWithPole)
             {
                 if (xMax / xMin > Math.Pow(10, 2) && segmentWithPole.LeftPole)
@@ -86,13 +84,7 @@ namespace RandomVariablesLibraryNew.Segments
                 args = LinSpace(xMin.Value, xMax.Value, numberOfPoints).ToList();
             }
 
-            foreach(var x in args)
-            {
-                var y = ProbabilityFunction(x);
-                points.Add(new Point(x, y));
-            }
-
-            return points;
+            return args;
         }
 
         public List<double> GetProbabilityFunctionValues(int numberOfPoints)
