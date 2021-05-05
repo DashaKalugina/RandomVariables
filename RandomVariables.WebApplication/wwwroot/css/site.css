@@ -71,9 +71,8 @@ body {
 }
 
 #calculator {
-    width: 325px;
+    width: 350px;
     height: auto;
-    margin: 100px auto;
     padding: 20px 20px 9px;
     background: #9dd2ea;
     background: linear-gradient(#9dd2ea, #8bceec);
@@ -89,11 +88,12 @@ body {
 /* Inset shadow on the screen to create indent */
 .top .screen {
 	height: 40px;
-	width: 212px;
+	width: 100%;
+	/*width: 212px;*/
 	
-	float: right;
-	
-	padding: 0 10px;
+	float: left;
+
+	margin-bottom: 11px;
 	
 	background: rgba(0, 0, 0, 0.2);
 	border-radius: 3px;
@@ -112,15 +112,15 @@ body {
 .keys, .top {overflow: hidden;}
 
 /* Applying same to the keys */
-.keys span, .top span.clear {
+.keys span {
 	float: left;
 	position: relative;
 	top: 0;
 	
 	cursor: pointer;
 	
-	width: 66px;
-	height: 60px;
+	width: 44px;
+	height: 38px;
 	
 	background: white;
 	border-radius: 3px;
@@ -146,16 +146,61 @@ body {
 	margin-right: 0;
 }
 
-.keys span.eval {
+/*.keys span.eval {
 	background: #f1ff92;
 	box-shadow: 0px 4px #9da853;
 	color: #888e5f;
+}*/
+
+.eval {
+	background: #f1ff92;
+	box-shadow: 0px 4px #9da853;
+	color: #888e5f;
+	float: left;
+	position: relative;
+	top: 0;
+	cursor: pointer;
+	width: 44px;
+	height: 88px;
+	border-radius: 3px;
+	line-height: 36px;
+	text-align: center;
+	user-select: none;
+	transition: all 0.2s ease;
+	border: none;
 }
 
-.top span.clear {
+.backspace {
+	background: white;
+	text-align: center;
+	cursor: pointer;
+	width: 44px;
+	height: 38px;
+	border-radius: 3px;
+	box-shadow: 0px 4px rgba(0, 0, 0, 0.2);
+	border: none;
+	float: left;
+	position: relative;
+	top: 0;
+	margin-bottom: 11px;
+}
+
+span.clear {
 	background: #ff9fa8;
 	box-shadow: 0px 4px #ff7c87;
 	color: white;
+
+	cursor: pointer;
+	width: 44px;
+	height: 38px;
+	border-radius: 3px;
+
+	float: left;
+    position: relative;
+    top: 0;
+    text-align: center;
+
+	margin-bottom: 11px;
 }
 
 /* Some hover effects */
@@ -165,15 +210,22 @@ body {
 	color: white;
 }
 
-.keys span.eval:hover {
+.eval:hover {
 	background: #abb850;
 	box-shadow: 0px 4px #717a33;
 	color: #ffffff;
+	border: none;
 }
 
-.top span.clear:hover {
+span.clear:hover {
 	background: #f68991;
 	box-shadow: 0px 4px #d3545d;
+	color: white;
+}
+
+.backspace:hover {
+	background: #9c89f6;
+	box-shadow: 0px 4px #6b54d3;
 	color: white;
 }
 
@@ -183,12 +235,19 @@ body {
 	top: 4px;
 }
 
-.keys span.eval:active {
+.eval:active {
 	box-shadow: 0px 0px #717a33;
 	top: 4px;
+	border: none;
 }
 
-.top span.clear:active {
+span.clear:active {
 	top: 4px;
 	box-shadow: 0px 0px #d3545d;
+}
+
+.backspace:active {
+	box-shadow: 0px 0px #6b54d3;
+	top: 4px;
+	border: none;
 }

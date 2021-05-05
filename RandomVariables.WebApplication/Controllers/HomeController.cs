@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RandomVariables.WebApplication.Models;
+using RandomVariablesLibrary.Distributions.Standard;
+using RandomVariables.WebApplication.ViewModels;
 
 namespace RandomVariables.WebApplication.Controllers
 {
@@ -20,7 +22,19 @@ namespace RandomVariables.WebApplication.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var standardDistributions = new List<string>
+            {
+                nameof(UniformDistribution),
+                nameof(NormalDistribution),
+                nameof(ExponentialDistribution),
+                nameof(ChiSquareDistribution),
+                nameof(GammaDistribution),
+                nameof(CauchyDistribution),
+                nameof(FDistribution),
+                nameof(WeibullDistribution)
+            };
+
+            return View(new CalculatorPageViewModel { StandardDistributions = standardDistributions});
         }
 
         public IActionResult Privacy()
