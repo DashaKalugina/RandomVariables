@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomVariables.Tests", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomVariablesLibraryNew", "..\RandomVariablesLibraryNew\RandomVariablesLibraryNew.csproj", "{43BEE8B6-6387-4E2C-8056-A1E407FEB44A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomVariablesLibrary", "..\RandomVariablesLibrary\RandomVariablesLibrary.csproj", "{ACBEB3A2-E5C7-488F-AB05-0C09551F7282}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomVariables.WebApplication", "..\RandomVariables.WebApplication\RandomVariables.WebApplication.csproj", "{070D3E30-2344-49B8-ACFA-3FEE17016884}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{43BEE8B6-6387-4E2C-8056-A1E407FEB44A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43BEE8B6-6387-4E2C-8056-A1E407FEB44A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43BEE8B6-6387-4E2C-8056-A1E407FEB44A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACBEB3A2-E5C7-488F-AB05-0C09551F7282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACBEB3A2-E5C7-488F-AB05-0C09551F7282}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACBEB3A2-E5C7-488F-AB05-0C09551F7282}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACBEB3A2-E5C7-488F-AB05-0C09551F7282}.Release|Any CPU.Build.0 = Release|Any CPU
+		{070D3E30-2344-49B8-ACFA-3FEE17016884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{070D3E30-2344-49B8-ACFA-3FEE17016884}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{070D3E30-2344-49B8-ACFA-3FEE17016884}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{070D3E30-2344-49B8-ACFA-3FEE17016884}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

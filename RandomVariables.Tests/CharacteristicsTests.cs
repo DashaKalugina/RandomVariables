@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
-using RandomVariablesLibraryNew;
-using RandomVariablesLibraryNew.Distributions.Standard;
+using RandomVariablesLibrary;
+using RandomVariablesLibrary.Distributions.Standard;
 
 namespace RandomVariables.Tests
 {

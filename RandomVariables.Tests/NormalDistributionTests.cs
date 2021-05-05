@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using RandomVariablesLibraryNew;
-using RandomVariablesLibraryNew.Distributions.Standard;
+using RandomVariablesLibrary;
+using RandomVariablesLibrary.Distributions.Standard;
 using System;
 using System.Collections.Generic;
 using System.Text;

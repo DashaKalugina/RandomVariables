@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RandomVariablesLibraryNew\RandomVariablesLibraryNew.csproj" />
+    <ProjectReference Include="..\RandomVariablesLibrary\RandomVariablesLibrary.csproj" />
   </ItemGroup>
 
 </Project>
