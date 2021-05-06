@@ -22,19 +22,30 @@ namespace RandomVariables.WebApplication.Controllers
 
         public IActionResult Index()
         {
-            var standardDistributions = new List<string>
+            //var standardDistributions = new List<string>
+            //{
+            //    nameof(UniformDistribution),
+            //    nameof(NormalDistribution),
+            //    nameof(ExponentialDistribution),
+            //    nameof(ChiSquareDistribution),
+            //    nameof(GammaDistribution),
+            //    nameof(CauchyDistribution),
+            //    nameof(FDistribution),
+            //    nameof(WeibullDistribution)
+            //};
+
+            var parametersByDistributionsName = new Dictionary<string, List<string>>
             {
-                nameof(UniformDistribution),
-                nameof(NormalDistribution),
-                nameof(ExponentialDistribution),
-                nameof(ChiSquareDistribution),
-                nameof(GammaDistribution),
-                nameof(CauchyDistribution),
-                nameof(FDistribution),
-                nameof(WeibullDistribution)
+                { nameof(UniformDistribution), new List<string> { "A (начало отрезка)", "B (конец отрезка)"} },
+                { nameof(NormalDistribution), new List<string> { "μ (мат. ожидание)", "σ (среднеквадр. отклонение)" } },
+                { nameof(ExponentialDistribution), new List<string> { "λ (обр. коэффициент масштаба)" } },
+                { nameof(ChiSquareDistribution), new List<string> { "k (число степеней свободы)"} },
+                { nameof(GammaDistribution), new List<string> { "k (параметр формы)", "θ (параметр масштаба)" } },
+                { nameof(CauchyDistribution), new List<string> { "x0 (параметр сдвига)", "γ (параметр масштаба)" } },
+                { nameof(FDistribution), new List<string> { "d1 (число степеней свободы)", "d2 (число степеней свободы)"} }
             };
 
-            return View(new CalculatorPageViewModel { StandardDistributions = standardDistributions});
+            return View(new CalculatorPageViewModel { ParametersByDistributionsName = parametersByDistributionsName });
         }
 
         public IActionResult Privacy()

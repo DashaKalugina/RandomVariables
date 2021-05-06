@@ -1,15 +1,41 @@
 ﻿@model RandomVariables.WebApplication.ViewModels.CalculatorPageViewModel
+@using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Home Page";
 }
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<!-- Modal -->
+<div class="modal fade" id="selectParametersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div id="selectParametersDialog" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="selectParametersModalLabel">Заполните параметры распределения</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="distrParametersContainer">
+                jhkjhkhj
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="setParametersButton" onclick="AddDistributionToScreen(event)">Добавить</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container">
     <div class="row">
         <div class="col-md-auto">
             <div class="list-group">
-                @foreach (var distrName in Model.StandardDistributions)
+                @foreach (var keyValuePair in Model.ParametersByDistributionsName)
                 {
-                    <button type="button" class="list-group-item list-group-item-action">@distrName</button>
+                    @*<button type="button" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#exampleModal">@distrName</button>*@
+                    <button type="button" class="addDistrButton list-group-item list-group-item-action" onclick="OpenSelectParametersDialog(event, '@JsonConvert.SerializeObject(keyValuePair.Value)', '@keyValuePair.Key')">@keyValuePair.Key</button>
                 }
             </div>
         </div>
@@ -20,7 +46,8 @@
                         <div class="col" style="padding:0">
                             <!-- Screen and clear key -->
                             <div class="top">
-                                <div class="screen"></div>
+                                @*<div class="screen"></div>*@
+                                <textarea class="screen"></textarea>
                             </div>
                         </div>
                     </div>
@@ -28,6 +55,9 @@
                         <div class="col-8" style="padding: 0">
                             <div class="keys">
                                 <!-- operators and other keys -->
+                                <span>(</span>
+                                <span>)</span>
+                                <span class="backspace" style="width: 95px;"><i class="fas fa-backspace"></i></span>
                                 <span>7</span>
                                 <span>8</span>
                                 <span>9</span>
@@ -47,13 +77,13 @@
                             </div>
                         </div>
                         <div class="col">
-                            <span class="backspace"><i class="fas fa-backspace"></i></span>
+                            @*<span class="backspace"><i class="fas fa-backspace"></i></span>*@
                             <span class="clear">C</span>
                             <span class="eval">=</span>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
         <div class="col-md-auto">
@@ -71,10 +101,9 @@
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
 
 <script>
     // === include 'setup' then 'config' above ===
-    
+
 </script>

@@ -7,6 +7,9 @@ namespace RandomVariables.WebApplication.ViewModels
 {
     public class CalculatorPageViewModel
     {
-        public List<string> StandardDistributions { get; set; }
+        //public List<string> StandardDistributions { get; set; }
+        public Dictionary<string, List<string>> ParametersByDistributionsName { get; set; }
+
+        //public Dictionary<string, string> ParametersByDistributionsName { get; set; }
     }
 }
