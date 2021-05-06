@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using RandomVariables.WebApplication.Models;
 using RandomVariablesLibrary.Distributions.Standard;
 using RandomVariables.WebApplication.ViewModels;
+using Newtonsoft.Json;
 
 namespace RandomVariables.WebApplication.Controllers
 {
@@ -57,6 +58,17 @@ namespace RandomVariables.WebApplication.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EvaluateExpression(string expression)
+        {
+            var normalDistr = new NormalDistribution(0, 1);
+            var data = normalDistr.GetPDFDataForPlot();
+            var x = data.Select(p => p.X);
+            var y = data.Select(p => p.Y);
+
+            return Json(new { x = JsonConvert.SerializeObject(x), y = JsonConvert.SerializeObject(y) });
         }
     }
 }

@@ -32,7 +32,7 @@ namespace RandomVariablesLibrary.Distributions.Base
             //InitPiecewisePDF();
         }
 
-        public List<Point> GetPDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 1000)
+        public List<Point> GetPDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 2000)
         {
             var resultPoints = new List<Point>();
 
@@ -64,7 +64,7 @@ namespace RandomVariablesLibrary.Distributions.Base
             return resultPoints;
         }
 
-        public List<Point> GetCDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 1000)
+        public List<Point> GetCDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 2000)
         {
             var resultPoints = new List<Point>();
 

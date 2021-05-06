@@ -39,7 +39,15 @@ function AddDistributionToScreen(e) {
     var paramsContainer = $("#distrParametersContainer");
     var params = paramsContainer.find("input");
 
-    var distrExpression = `${distrName}(`;
+    var shortDistrName = '';
+    if (distrName === "FDistribution") {
+        shortDistrName = 'FDistr';
+    } else {
+        var index = distrName.indexOf("Distribution");
+        shortDistrName = distrName.substring(0, index);
+    }
+
+    var distrExpression = `${shortDistrName}(`;
 
     var firstParam = true;
     Array.from(params).forEach(p => {
@@ -54,6 +62,18 @@ function AddDistributionToScreen(e) {
     distrExpression += ')';
 
     var input = document.querySelector('.screen');
+    //if (input.innerHTML === '') {
+    //    input.innerHTML += distrExpression;
+    //} else {
+    //    input.innerHTML += `&#13;&#10;${distrExpression}`;
+    //}
+
+    //if (input.innerHTML.length + distrExpression.length > 35) {
+    //    input.innerHTML += `&#13;&#10;${distrExpression}`;
+    //} else {
+    //    input.innerHTML += distrExpression;
+    //}
+
     input.innerHTML += distrExpression;
 
     $('#selectParametersModal').modal('hide');
@@ -80,7 +100,7 @@ for (var i = 0; i < keys.length; i++) {
             input.innerHTML = input.innerHTML.substring(0, screenValueLength - 1);
         }
         else if (btnVal === '=') {
-
+            EvaluateExpression(input.innerHTML);
         }
         else if (operators.indexOf(btnVal) > -1) {
             // Operator is clicked
@@ -131,36 +151,122 @@ for (var i = 0; i < keys.length; i++) {
     }
 }
 
-const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-];
-const data = {
-    labels: labels,
-    datasets: [{
-        label: 'My First dataset',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: [0, 10, 5, 2, 20, 30, 45],
-    }]
-};
+function EvaluateExpression(expression) {
+    $.ajax({
+        url: '/Home/EvaluateExpression',
+        type: 'post',
+        data: { expression },
+        dataType: 'json',
+        accept: 'application/json',
+        success: function (receivedData) {
+            var args = Array.from(JSON.parse(receivedData.x));
+            var values = Array.from(JSON.parse(receivedData.y));
 
-const config = {
-    type: 'line',
-    data,
-    options: {}
-};
+            var data = [];
 
-var myChart1 = new Chart(
-    document.getElementById('myChart1'),
-    config
-);
+            var i = 0;
+            args.forEach(x => {
+                data.push([x, values[i]]);
+                i++;
+            });
 
-var myChart2 = new Chart(
-    document.getElementById('myChart2'),
-    config
-);
+            // График функции плотности
+            var pdfChart = anychart.area();
+            var series1 = pdfChart.area(data);
+            pdfChart.title("График функции плотности f(x)");
+
+            //pdfChart.xGrid().enabled(true);
+            pdfChart.yGrid().enabled(true);
+            // enable minor grids
+            //chart.xMinorGrid().enabled(true);
+            //chart.yMinorGrid().enabled(true);
+
+            //chart.xAxis().staggerMode(true);
+            //// adjusting settings for stagger mode
+            //chart.xAxis().staggerLines(2);
+
+            pdfChart.container("pdfChartContainer");
+            pdfChart.draw();
+
+            var select1 = document.getElementById('pdfTypeSelect');
+            select1.onchange = () => {
+                series1.seriesType(select1.value);
+            };
+
+            // График функции распределения
+            var cdfChart = anychart.area();
+            var series2 = cdfChart.area(data);
+            cdfChart.title("График функции распределения F(x)");
+
+            cdfChart.xGrid().enabled(true);
+            cdfChart.yGrid().enabled(true);
+
+            cdfChart.container("cdfChartContainer");
+            cdfChart.draw();
+
+            var select2 = document.getElementById('cdfTypeSelect');
+            select2.onchange = () => {
+                series2.seriesType(select2.value);
+            };
+        }
+    });
+}
+
+//function switchType() {
+//    var select = document.getElementById("typeSelect");
+//    series.seriesType(select.value);
+//}
+
+anychart.onDocumentLoad(function () {
+    // create an instance of a pie chart
+    //var chart = anychart.pie();
+    //// set the data
+    //chart.data([
+    //    ["Chocolate", 5],
+    //    ["Rhubarb compote", 2],
+    //    ["Crêpe Suzette", 2],
+    //    ["American blueberry", 2],
+    //    ["Buttermilk", 1]
+    //]);
+    //// set chart title
+    //chart.title("Top 5 pancake fillings");
+    //// set the container element 
+    //chart.container("chartContainer");
+    //// initiate chart display
+    //chart.draw();
+});
+
+//const labels = [
+//    'January',
+//    'February',
+//    'March',
+//    'April',
+//    'May',
+//    'June',
+//];
+//const data = {
+//    labels: labels,
+//    datasets: [{
+//        label: 'My First dataset',
+//        backgroundColor: 'rgb(255, 99, 132)',
+//        borderColor: 'rgb(255, 99, 132)',
+//        data: [0, 10, 5, 2, 20, 30, 45],
+//    }]
+//};
+
+//const config = {
+//    type: 'line',
+//    data,
+//    options: {}
+//};
+
+//var myChart1 = new Chart(
+//    document.getElementById('myChart1'),
+//    config
+//);
+
+//var myChart2 = new Chart(
+//    document.getElementById('myChart2'),
+//    config
+//);
+
