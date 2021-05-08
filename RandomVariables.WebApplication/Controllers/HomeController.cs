@@ -9,11 +9,14 @@ using RandomVariables.WebApplication.Models;
 using RandomVariablesLibrary.Distributions.Standard;
 using RandomVariables.WebApplication.ViewModels;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace RandomVariables.WebApplication.Controllers
 {
     public class HomeController : Controller
     {
+        private const string CUSTOM_DISTR_FOLDER_NAME = "CustomDistrFiles";
+
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
@@ -23,6 +26,13 @@ namespace RandomVariables.WebApplication.Controllers
 
         public IActionResult Index()
         {
+            // Удалим папку с пользовательскими распределениями при загрузке главной страницы. Если ее не было то создадим.
+            var customDistrFolderName = Path.Combine(Directory.GetCurrentDirectory(), CUSTOM_DISTR_FOLDER_NAME);
+            if (Directory.Exists(customDistrFolderName))
+            {
+                Directory.Delete(customDistrFolderName, true);
+            }
+
             var shortDistrNamesByFullNames = DistributionNames.FullDistrNamesByShortNames.ToDictionary(k => k.Value, v => v.Key);
             var viewModel = new CalculatorPageViewModel
             {
@@ -91,6 +101,45 @@ namespace RandomVariables.WebApplication.Controllers
                     y = JsonConvert.SerializeObject(cdfData.Select(p => p.Y))
                 }
             });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> AddFile()
+        {
+            var fileToUpload = Request.Form.Files.FirstOrDefault();
+            var fileExtention = Path.GetExtension(fileToUpload.FileName);
+            var fileName = $"{Request.Form.FirstOrDefault(x => x.Key == "fileName").Value}{fileExtention}";
+            if (fileToUpload == null)
+            {
+                return Json(new { MessageError = "Произошла ошибка при добавлении файла" });
+            }
+            try
+            {
+                var customDistrFolderName = Path.Combine(Directory.GetCurrentDirectory(), CUSTOM_DISTR_FOLDER_NAME);
+                if (!Directory.Exists(customDistrFolderName))
+                {
+                    Directory.CreateDirectory(customDistrFolderName);
+                }
+                var filePath = Path.Combine(customDistrFolderName, fileName);
+                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await fileToUpload.CopyToAsync(fileStream);
+                }
+                //var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+                //// Уменьшаем баланс согласно размеру файла.
+                //currentUser.Balance -= (decimal)fileToUpload.Length / 1024;
+
+                //var filesContainerName = currentUser.Id;
+
+                //await _filesManagementService.UploadFileToUserContainer(filesContainerName, fileToUpload);
+
+                //_context.SaveChanges();
+                return Json(new { Ok = true, DistrName = Path.GetFileNameWithoutExtension(filePath) });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { MessageError = ex.Message });
+            }
         }
     }
 }

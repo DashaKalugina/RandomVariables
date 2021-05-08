@@ -12,6 +12,26 @@
 //    });
 //})
 
+$(document).ready(function () {
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+});
+
 function OpenSelectParametersDialog(event, paramsString, distrName, shortDistrName) {
     event.preventDefault();
 
@@ -237,56 +257,52 @@ function EvaluateExpression(expression) {
 //    series.seriesType(select.value);
 //}
 
-anychart.onDocumentLoad(function () {
-    // create an instance of a pie chart
-    //var chart = anychart.pie();
-    //// set the data
-    //chart.data([
-    //    ["Chocolate", 5],
-    //    ["Rhubarb compote", 2],
-    //    ["Crêpe Suzette", 2],
-    //    ["American blueberry", 2],
-    //    ["Buttermilk", 1]
-    //]);
-    //// set chart title
-    //chart.title("Top 5 pancake fillings");
-    //// set the container element 
-    //chart.container("chartContainer");
-    //// initiate chart display
-    //chart.draw();
-});
+function AddCustomDistrToScreen(event) {
+    var input = document.querySelector('.screen');
+    input.innerHTML += event.target.innerHTML;
+}
 
-//const labels = [
-//    'January',
-//    'February',
-//    'March',
-//    'April',
-//    'May',
-//    'June',
-//];
-//const data = {
-//    labels: labels,
-//    datasets: [{
-//        label: 'My First dataset',
-//        backgroundColor: 'rgb(255, 99, 132)',
-//        borderColor: 'rgb(255, 99, 132)',
-//        data: [0, 10, 5, 2, 20, 30, 45],
-//    }]
-//};
+var customDistributionNumber = 0;
+function UploadFile() {
+    var fileInput = $('#fileToUploadInputId');
+    if (!fileInput.prop('files')) {
+        toastr.warning('Ваш браузер не поддерживает загрузку файлов');
+        return;
+    }
 
-//const config = {
-//    type: 'line',
-//    data,
-//    options: {}
-//};
+    if (!fileInput.prop('files')[0]) {
+        toastr.warning('Для загрузки необходимо сначала выбрать загружаемый файл');
+        return;
+    }
+    // Проверяем, есть ли файлы с таким именем.
+    var file = fileInput.prop('files')[0];
+    //// Валидируем имя файла и баланс. Т.е. проверяем, является ли имя файла уникальным и хватает ли денег.
+    //if (!ValidateFileNameAndBalance(file.name, file.size)) {
+    //    return;
+    //}
 
-//var myChart1 = new Chart(
-//    document.getElementById('myChart1'),
-//    config
-//);
+    var formData = new FormData();
+    formData.append("FileUpload", file);
+    customDistributionNumber++;
+    formData.append("fileName", "CustomDistr" + customDistributionNumber);
+    $.ajax({
+        url: '/Home/AddFile',
+        type: 'post',
+        data: formData,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success: function (receivedData) {
+            if (receivedData.messageError) {
+                toastr.error(`При загрузке файла возникли ошибки: ${receivedData.messageError}`);
+                return;
+            }
 
-//var myChart2 = new Chart(
-//    document.getElementById('myChart2'),
-//    config
-//);
+            var listOfDistrButtons = $('#listOfDistrButtons');
+            var newButton = `<button type="button" class="addDistrButton list-group-item list-group-item-action" onclick="AddCustomDistrToScreen(event)">${receivedData.distrName}</button>`;
+            listOfDistrButtons.append($(newButton));
 
+            toastr.success(`Содержимое файла успешно загружено в распределение ${receivedData.distrName}`);
+        }
+    });
+}

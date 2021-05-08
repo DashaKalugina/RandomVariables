@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomVariables", "RandomVariables.csproj", "{D9C7B0F7-1E85-4506-8EE9-E302D86913A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomVariables", "RandomVariables\RandomVariables.csproj", "{D9C7B0F7-1E85-4506-8EE9-E302D86913A6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomVariables.Tests", "..\RandomVariables.Tests\RandomVariables.Tests.csproj", "{B36C324C-01B9-4677-BBBC-3236EC614FD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomVariables.Tests", "RandomVariables.Tests\RandomVariables.Tests.csproj", "{B36C324C-01B9-4677-BBBC-3236EC614FD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomVariablesLibraryNew", "..\RandomVariablesLibraryNew\RandomVariablesLibraryNew.csproj", "{43BEE8B6-6387-4E2C-8056-A1E407FEB44A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomVariablesLibraryNew", "RandomVariablesLibraryNew\RandomVariablesLibraryNew.csproj", "{43BEE8B6-6387-4E2C-8056-A1E407FEB44A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomVariablesLibrary", "..\RandomVariablesLibrary\RandomVariablesLibrary.csproj", "{ACBEB3A2-E5C7-488F-AB05-0C09551F7282}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomVariablesLibrary", "RandomVariablesLibrary\RandomVariablesLibrary.csproj", "{ACBEB3A2-E5C7-488F-AB05-0C09551F7282}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomVariables.WebApplication", "..\RandomVariables.WebApplication\RandomVariables.WebApplication.csproj", "{070D3E30-2344-49B8-ACFA-3FEE17016884}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomVariables.WebApplication", "RandomVariables.WebApplication\RandomVariables.WebApplication.csproj", "{070D3E30-2344-49B8-ACFA-3FEE17016884}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,12 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RandomVariables.WebApplication.Models;
+using RandomVariablesLibrary.Distributions.Custom;
+using System.IO;
 
 namespace RandomVariables.WebApplication
 {
     public static class FormulaRecognitionService
     {
         private static List<string> _standardDistributions = DistributionNames.FullDistrNamesByShortNames.Keys.ToList();
+
+		private const string CUSTOM_DISTR_FOLDER_NAME = "CustomDistrFiles";
 
 		public static Distribution GetResultFormula(string formula)
         {
@@ -24,8 +28,6 @@ namespace RandomVariables.WebApplication
 				throw new Exception("Formula is invalid");
 
 			var indexOfDistr = IndexOfStandartDistribution(formulaString, 0);
-			//if ((!IsDigit(formulaString[0]) || !IsNegativeNumber(formulaString, 0)) && indexOfDistr == -1 && formulaString[0] != '(')
-			//	throw new Exception("Syntax error");
 
 			if (!IsDigit(formulaString[0]) && !IsNegativeNumber(formulaString, 0) && indexOfDistr == -1 && formulaString[0] != '(')
 				throw new Exception("Syntax error");
@@ -173,13 +175,30 @@ namespace RandomVariables.WebApplication
 				var indexOfDistr = IndexOfStandartDistribution(formula, startIndex);
                 if (indexOfDistr != -1)
                 {
-					formulaElement = _standardDistributions[indexOfDistr];
+					var distrName = _standardDistributions[indexOfDistr];
+					if (DistributionNames.FullDistrNamesByShortNames[distrName] == nameof(CustomDistribution))
+					{
+						var startPosition = startIndex;
+						startIndex += distrName.Length + 1;
+						while (startIndex != formula.Length && IsDigit(formula[startIndex]))
+						{
+							startIndex++;
+						}
+
+						formulaElement = formula.Substring(startPosition, startIndex - startPosition);
+
+						return formulaElement;
+					}
+
+					formulaElement = distrName;
 					startIndex += formulaElement.Length - 1;
 					while (formula[startIndex] != ')')
 					{
 						startIndex++;
 						formulaElement += formula[startIndex];
 					}
+
+					return formulaElement;
 				}
 			}
 
@@ -215,6 +234,19 @@ namespace RandomVariables.WebApplication
 				if (indexOfDistr != -1)
 				{
 					var distrName = _standardDistributions[indexOfDistr];
+					// Если кастомное распределение, то у него нет параметров, но есть индекс по которому надо достать данные из файла.
+					if (DistributionNames.FullDistrNamesByShortNames[distrName] == nameof(CustomDistribution))
+                    {
+						var customDistribution = GetCustomDistribution(distrName, formulaPPN, i);
+						distributionsStack.Push((customDistribution, null));
+						i += distrName.Length + 1;
+						while (i != formulaPPN.Length && IsDigit(formulaPPN[i]))
+						{
+							i++;
+						}
+						continue;
+                    }
+					
                     var startIndex = i;
                     while (formulaPPN[i] != ')')
                     {
@@ -224,8 +256,11 @@ namespace RandomVariables.WebApplication
 					var distrParameters = formulaPPN.Substring(distrStartIndex, i - distrStartIndex);
                     var distribution = GetDistributionByName(distrName, distrParameters);
 					distributionsStack.Push((distribution, null));
+
+					continue;
 				}
-				else if (IsDigit(formulaPPN[i]) || isNegativeNumber)
+				
+				if (IsDigit(formulaPPN[i]) || isNegativeNumber)
 				{
                     if (isNegativeNumber)
                     {
@@ -243,20 +278,21 @@ namespace RandomVariables.WebApplication
 					number = isNegativeNumber ? -number : number;
 					distributionsStack.Push((null, number));
 					i--;
-				} 
-				else
-				{
-					char operation = formulaPPN[i];
-					if (distributionsStack.Count() < 2)
-					{
-						throw new Exception("Формула имеет некорректный формат");
-					}
-					
-					var secondElement = distributionsStack.Pop();
-					var firstElement = distributionsStack.Pop();
-					var operationResult = GetOperationResult(firstElement, secondElement, operation);
-					distributionsStack.Push((operationResult, null));
+
+					continue;
 				}
+
+				char operation = formulaPPN[i];
+				if (distributionsStack.Count() < 2)
+				{
+					throw new Exception("Формула имеет некорректный формат");
+				}
+
+				var secondElement = distributionsStack.Pop();
+				var firstElement = distributionsStack.Pop();
+				var operationResult = GetOperationResult(firstElement, secondElement, operation);
+				distributionsStack.Push((operationResult, null));
+
 			}
 
 			if (distributionsStack.Count() != 1)
@@ -265,6 +301,27 @@ namespace RandomVariables.WebApplication
 			}
 
 			return distributionsStack.Pop().distribution;
+		}
+
+		private static CustomDistribution GetCustomDistribution(string distrName, string formulaPPN, int index)
+        {
+			var startIndex = index;
+			index += distrName.Length + 1;
+            while (index != formulaPPN.Length && IsDigit(formulaPPN[index]))
+            {
+				index++;
+            }
+			var customDistrFileName = formulaPPN.Substring(startIndex, index - startIndex);
+			var folderPath = Path.Combine(Directory.GetCurrentDirectory(), CUSTOM_DISTR_FOLDER_NAME);
+			var fileAndExtention = Directory.GetFiles(folderPath)
+				.Select(x => (Path.GetFileNameWithoutExtension(x), Path.GetExtension(x)))
+				.FirstOrDefault(x => x.Item1 == customDistrFileName);
+			var filePath = $"{fileAndExtention.Item1}{fileAndExtention.Item2}";
+
+			var data = File.ReadAllLines(Path.Combine(folderPath, filePath)).Select(x => double.Parse(x)).ToArray();
+			var customDistribution = new CustomDistribution(data);
+
+			return customDistribution;
 		}
 
 		private static Distribution GetDistributionByName(string distrName, string distrParams)

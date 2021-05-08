@@ -31,7 +31,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-auto">
-            <div class="list-group" style="font-size: 14px;margin-top: 105px;">
+            <div id ="listOfDistrButtons" class="list-group" style="font-size: 14px;margin-top: 105px;">
                 @foreach (var keyValuePair in Model.ParametersByDistributionsName)
                 {
                     <button type="button" class="addDistrButton list-group-item list-group-item-action" 
@@ -89,7 +89,7 @@
                 <label for="fileToUpload" style="font-size: 14px;">Загрузка пользовательского распределения</label>
             </div>
             <div class="form-inline" style="">
-                <input name="fileToUpload" id="fileToUploadInputId" type="file" class="form-control" style="width:270px; margin:5px; padding: 5px; font-size:14px;" />
+                <input name="fileToUpload" id="fileToUploadInputId" type="file" accept="text/plain" class="form-control" style="width:270px; margin:5px; padding: 5px; font-size:14px;" />
                 <input type="button" value="Загрузить" onclick="UploadFile()" class="btn btn-primary" style="font-size: 14px;" />
             </div>
         </div>

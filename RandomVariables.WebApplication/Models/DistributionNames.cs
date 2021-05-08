@@ -1,4 +1,5 @@
-﻿using RandomVariablesLibrary.Distributions.Standard;
+﻿using RandomVariablesLibrary.Distributions.Custom;
+using RandomVariablesLibrary.Distributions.Standard;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,8 @@ namespace RandomVariables.WebApplication.Models
             { "ChiSquare", nameof(ChiSquareDistribution) },
             { "Gamma", nameof(GammaDistribution) },
             { "Cauchy", nameof(CauchyDistribution) },
-            { "FDistr", nameof(FDistribution) }
+            { "FDistr", nameof(FDistribution) },
+            { "CustomDistr", nameof(CustomDistribution)}
         };
 
         //public static readonly IEnumerable<string> FullDistrNames = new List<string>
