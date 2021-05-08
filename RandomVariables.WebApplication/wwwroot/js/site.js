@@ -12,7 +12,7 @@
 //    });
 //})
 
-function OpenSelectParametersDialog(event, paramsString, distrName) {
+function OpenSelectParametersDialog(event, paramsString, distrName, shortDistrName) {
     event.preventDefault();
 
     var parameters = JSON.parse(paramsString);
@@ -20,7 +20,7 @@ function OpenSelectParametersDialog(event, paramsString, distrName) {
     var paramsContainer = $("#distrParametersContainer");
     paramsContainer.empty();
 
-    document.getElementById('distrParametersContainer').setAttribute("data-distrName", distrName);
+    document.getElementById('distrParametersContainer').setAttribute("data-distrName", shortDistrName);
 
     parameters.forEach(param => {
 
@@ -39,20 +39,22 @@ function AddDistributionToScreen(e) {
     var paramsContainer = $("#distrParametersContainer");
     var params = paramsContainer.find("input");
 
-    var shortDistrName = '';
-    if (distrName === "FDistribution") {
-        shortDistrName = 'FDistr';
-    } else {
-        var index = distrName.indexOf("Distribution");
-        shortDistrName = distrName.substring(0, index);
-    }
+    //var shortDistrName = '';
+    //if (distrName === "FDistribution") {
+    //    shortDistrName = 'FDistr';
+    //} else {
+    //    var index = distrName.indexOf("Distribution");
+    //    shortDistrName = distrName.substring(0, index);
+    //}
 
-    var distrExpression = `${shortDistrName}(`;
+    //var distrExpression = `${shortDistrName}(`;
+
+    var distrExpression = `${distrName}(`;
 
     var firstParam = true;
     Array.from(params).forEach(p => {
         if (!firstParam) {
-            distrExpression += ',';
+            distrExpression += ';';
         }
 
         distrExpression += Number(p.value);
@@ -82,7 +84,7 @@ function AddDistributionToScreen(e) {
 }
 
 var keys = document.querySelectorAll('#calculator span');
-var operators = ['+', '-', 'x', '/'];
+var operators = ['+', '-', '*', '/'];
 var decimalAdded = false;
 
 for (var i = 0; i < keys.length; i++) {
@@ -159,20 +161,32 @@ function EvaluateExpression(expression) {
         dataType: 'json',
         accept: 'application/json',
         success: function (receivedData) {
-            var args = Array.from(JSON.parse(receivedData.x));
-            var values = Array.from(JSON.parse(receivedData.y));
+            var pdf = receivedData.pdf;
+            var cdf = receivedData.cdf;
 
-            var data = [];
+            var args1 = Array.from(JSON.parse(pdf.x));
+            var values1 = Array.from(JSON.parse(pdf.y));
 
+            var args2 = Array.from(JSON.parse(cdf.x));
+            var values2 = Array.from(JSON.parse(cdf.y));
+
+            var pdfData = [];
             var i = 0;
-            args.forEach(x => {
-                data.push([x, values[i]]);
+            args1.forEach(x => {
+                pdfData.push([x, values1[i]]);
+                i++;
+            });
+
+            var cdfData = [];
+            i = 0;
+            args2.forEach(x => {
+                cdfData.push([x, values2[i]]);
                 i++;
             });
 
             // График функции плотности
             var pdfChart = anychart.area();
-            var series1 = pdfChart.area(data);
+            var series1 = pdfChart.area(pdfData);
             pdfChart.title("График функции плотности f(x)");
 
             //pdfChart.xGrid().enabled(true);
@@ -185,6 +199,9 @@ function EvaluateExpression(expression) {
             //// adjusting settings for stagger mode
             //chart.xAxis().staggerLines(2);
 
+            pdfChart.yScale(anychart.scales.linear());
+            pdfChart.xScale(anychart.scales.linear());
+
             pdfChart.container("pdfChartContainer");
             pdfChart.draw();
 
@@ -195,11 +212,14 @@ function EvaluateExpression(expression) {
 
             // График функции распределения
             var cdfChart = anychart.area();
-            var series2 = cdfChart.area(data);
+            var series2 = cdfChart.area(cdfData);
             cdfChart.title("График функции распределения F(x)");
 
             cdfChart.xGrid().enabled(true);
             cdfChart.yGrid().enabled(true);
+
+            cdfChart.yScale(anychart.scales.linear());
+            cdfChart.xScale(anychart.scales.linear());
 
             cdfChart.container("cdfChartContainer");
             cdfChart.draw();

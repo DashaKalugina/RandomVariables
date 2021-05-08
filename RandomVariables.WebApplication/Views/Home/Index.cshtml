@@ -34,7 +34,8 @@
             <div class="list-group" style="font-size: 14px;margin-top: 105px;">
                 @foreach (var keyValuePair in Model.ParametersByDistributionsName)
                 {
-                    <button type="button" class="addDistrButton list-group-item list-group-item-action" onclick="OpenSelectParametersDialog(event, '@JsonConvert.SerializeObject(keyValuePair.Value)', '@keyValuePair.Key')">@keyValuePair.Key</button>
+                    <button type="button" class="addDistrButton list-group-item list-group-item-action" 
+                            onclick="OpenSelectParametersDialog(event, '@JsonConvert.SerializeObject(keyValuePair.Value)', '@keyValuePair.Key', '@Model.ShortDistrNamesByFullNames[keyValuePair.Key]')">@keyValuePair.Key</button>
                 }
             </div>
         </div>
@@ -68,7 +69,7 @@
                                 <span>1</span>
                                 <span>2</span>
                                 <span>3</span>
-                                <span class="operator">x</span>
+                                <span class="operator">*</span>
                                 <span>+/-</span>
                                 <span>0</span>
                                 <span>.</span>

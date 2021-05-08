@@ -23,30 +23,14 @@ namespace RandomVariables.WebApplication.Controllers
 
         public IActionResult Index()
         {
-            //var standardDistributions = new List<string>
-            //{
-            //    nameof(UniformDistribution),
-            //    nameof(NormalDistribution),
-            //    nameof(ExponentialDistribution),
-            //    nameof(ChiSquareDistribution),
-            //    nameof(GammaDistribution),
-            //    nameof(CauchyDistribution),
-            //    nameof(FDistribution),
-            //    nameof(WeibullDistribution)
-            //};
-
-            var parametersByDistributionsName = new Dictionary<string, List<string>>
+            var shortDistrNamesByFullNames = DistributionNames.FullDistrNamesByShortNames.ToDictionary(k => k.Value, v => v.Key);
+            var viewModel = new CalculatorPageViewModel
             {
-                { nameof(UniformDistribution), new List<string> { "A (начало отрезка)", "B (конец отрезка)"} },
-                { nameof(NormalDistribution), new List<string> { "μ (мат. ожидание)", "σ (среднеквадр. отклонение)" } },
-                { nameof(ExponentialDistribution), new List<string> { "λ (обр. коэффициент масштаба)" } },
-                { nameof(ChiSquareDistribution), new List<string> { "k (число степеней свободы)"} },
-                { nameof(GammaDistribution), new List<string> { "k (параметр формы)", "θ (параметр масштаба)" } },
-                { nameof(CauchyDistribution), new List<string> { "x0 (параметр сдвига)", "γ (параметр масштаба)" } },
-                { nameof(FDistribution), new List<string> { "d1 (число степеней свободы)", "d2 (число степеней свободы)"} }
+                ParametersByDistributionsName = DistributionNames.ParametersByDistributionsName,
+                ShortDistrNamesByFullNames = shortDistrNamesByFullNames
             };
 
-            return View(new CalculatorPageViewModel { ParametersByDistributionsName = parametersByDistributionsName });
+            return View(viewModel);
         }
 
         public IActionResult Privacy()
@@ -61,14 +45,52 @@ namespace RandomVariables.WebApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> EvaluateExpression(string expression)
+        public JsonResult EvaluateExpression(string expression)
         {
-            var normalDistr = new NormalDistribution(0, 1);
-            var data = normalDistr.GetPDFDataForPlot();
-            var x = data.Select(p => p.X);
-            var y = data.Select(p => p.Y);
+            var resultDistr = FormulaRecognitionService.GetResultFormula(expression);
+            //var pdfData = resultDistr.GetPDFDataForPlot();
+            //var x1 = pdfData.Select(p => p.X);
+            //var y1 = pdfData.Select(p => p.Y);
 
-            return Json(new { x = JsonConvert.SerializeObject(x), y = JsonConvert.SerializeObject(y) });
+            //var cdfData = resultDistr.GetCDFDataForPlot();
+            //var x2 = cdfData.Select(p => p.X);
+            //var y2 = cdfData.Select(p => p.Y);
+
+            //return Json(new 
+            //{
+            //    pdf = new
+            //    {
+            //        x = JsonConvert.SerializeObject(x1),
+            //        y = JsonConvert.SerializeObject(y1),
+            //    },
+            //    cdf = new
+            //    {
+            //        x = JsonConvert.SerializeObject(x2),
+            //        y = JsonConvert.SerializeObject(y2)
+            //    }          
+            //});
+
+            var pdfData = resultDistr.GetPDFDataForPlot();
+          //  var x1 = pdfData.Select(p => p.X);
+          //  var y1 = pdfData.Select(p => p.Y);
+
+            var cdfData = resultDistr.GetCDFDataForPlot();
+          //  var x2 = cdfData.Select(p => p.X);
+           // var y2 = cdfData.Select(p => p.Y);
+
+            return Json(new
+            {
+                pdf = new
+                {
+                    x = JsonConvert.SerializeObject(pdfData.Select(p => p.X)),
+                    y = JsonConvert.SerializeObject(pdfData.Select(p => p.Y)),
+                },
+                cdf = new
+                {
+                    x = JsonConvert.SerializeObject(cdfData.Select(p => p.X)),
+                    y = JsonConvert.SerializeObject(cdfData.Select(p => p.Y))
+                }
+            });
         }
     }
 }

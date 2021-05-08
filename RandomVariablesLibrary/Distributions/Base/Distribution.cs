@@ -32,7 +32,7 @@ namespace RandomVariablesLibrary.Distributions.Base
             //InitPiecewisePDF();
         }
 
-        public List<Point> GetPDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 2000)
+        public List<Point> GetPDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 1000)
         {
             var resultPoints = new List<Point>();
 
@@ -64,7 +64,7 @@ namespace RandomVariablesLibrary.Distributions.Base
             return resultPoints;
         }
 
-        public List<Point> GetCDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 2000)
+        public List<Point> GetCDFDataForPlot(double? xMin = null, double? xMax = null, int numberOfPoints = 1000)
         {
             var resultPoints = new List<Point>();
 
@@ -179,6 +179,37 @@ namespace RandomVariablesLibrary.Distributions.Base
 
             return new ShiftedScaledDistribution(distribution, scale: 1 / number);
         }
+
+        public static ShiftedScaledDistribution operator +(double number, Distribution distribution)
+        {
+            return new ShiftedScaledDistribution(distribution, shift: number);
+        }
+
+        public static ShiftedScaledDistribution operator -(double number, Distribution distribution)
+        {
+            return new ShiftedScaledDistribution(distribution, shift: number, scale: -1);
+        }
+
+        public static Distribution operator *(double number, Distribution distribution)
+        {
+            if (number == 1)
+            {
+                return distribution;
+            }
+
+            return new ShiftedScaledDistribution(distribution, scale: number);
+        }
+
+        // Доработать возведение в степень
+        //public static Distribution operator /(Distribution distribution, double number)
+        //{
+        //    if (number == 1)
+        //    {
+        //        return distribution;
+        //    }
+
+        //    return new ShiftedScaledDistribution(distribution, scale: 1 / number);
+        //}
 
         #endregion
     }
