@@ -29,6 +29,7 @@ namespace RandomVariables.WebApplication.Models
             { "Gamma", nameof(GammaDistribution) },
             { "Cauchy", nameof(CauchyDistribution) },
             { "FDistr", nameof(FDistribution) },
+            { "WeibullDistr", nameof(WeibullDistribution)},
             { "CustomDistr", nameof(CustomDistribution)}
         };
 
@@ -52,7 +53,8 @@ namespace RandomVariables.WebApplication.Models
                 { nameof(ChiSquareDistribution), new List<string> { "k (число степеней свободы)"} },
                 { nameof(GammaDistribution), new List<string> { "k (параметр формы)", "θ (параметр масштаба)" } },
                 { nameof(CauchyDistribution), new List<string> { "x0 (параметр сдвига)", "γ (параметр масштаба)" } },
-                { nameof(FDistribution), new List<string> { "d1 (число степеней свободы)", "d2 (число степеней свободы)"} }
+                { nameof(FDistribution), new List<string> { "d1 (число степеней свободы)", "d2 (число степеней свободы)"} },
+                { nameof(WeibullDistribution), new List<string> { "k (коэффициент формы)", "λ (коэффициент масштаба)" } }
         };
     }
 }

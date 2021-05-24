@@ -209,7 +209,7 @@ function EvaluateExpression(expression) {
             var series1 = pdfChart.area(pdfData);
             pdfChart.title("График функции плотности f(x)");
 
-            //pdfChart.xGrid().enabled(true);
+            pdfChart.xGrid().enabled(true);
             pdfChart.yGrid().enabled(true);
             // enable minor grids
             //chart.xMinorGrid().enabled(true);

@@ -76,7 +76,7 @@ namespace RandomVariables.WebApplication
 								}
 								while (!(operationStack.Count() == 0) && GetOperationPriority(operation) <= GetOperationPriority(operationStack.Peek()))
 								{
-									resultString += operationStack.Pop() + ' ';
+									resultString += operationStack.Pop() + " ";
 								}
 								if ((!(operationStack.Count() == 0) && GetOperationPriority(operation) > GetOperationPriority(operationStack.Peek())) || (operationStack.Count() == 0))
 								{
