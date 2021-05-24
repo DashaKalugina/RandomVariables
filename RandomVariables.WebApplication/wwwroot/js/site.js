@@ -3,15 +3,6 @@
 
 // Write your JavaScript code.
 
-//$(document).ready(function () {
-//    $(".addDistrButton").click(function (e) {
-
-//        e.preventDefault();
-//        //$('#dialogContent').html(data);
-//        $('#selectParametersModal').modal('show');
-//    });
-//})
-
 $(document).ready(function () {
     toastr.options = {
         "closeButton": false,
@@ -59,16 +50,6 @@ function AddDistributionToScreen(e) {
     var paramsContainer = $("#distrParametersContainer");
     var params = paramsContainer.find("input");
 
-    //var shortDistrName = '';
-    //if (distrName === "FDistribution") {
-    //    shortDistrName = 'FDistr';
-    //} else {
-    //    var index = distrName.indexOf("Distribution");
-    //    shortDistrName = distrName.substring(0, index);
-    //}
-
-    //var distrExpression = `${shortDistrName}(`;
-
     var distrExpression = `${distrName}(`;
 
     var firstParam = true;
@@ -84,18 +65,6 @@ function AddDistributionToScreen(e) {
     distrExpression += ')';
 
     var input = document.querySelector('.screen');
-    //if (input.innerHTML === '') {
-    //    input.innerHTML += distrExpression;
-    //} else {
-    //    input.innerHTML += `&#13;&#10;${distrExpression}`;
-    //}
-
-    //if (input.innerHTML.length + distrExpression.length > 35) {
-    //    input.innerHTML += `&#13;&#10;${distrExpression}`;
-    //} else {
-    //    input.innerHTML += distrExpression;
-    //}
-
     input.innerHTML += distrExpression;
 
     $('#selectParametersModal').modal('hide');
@@ -211,13 +180,6 @@ function EvaluateExpression(expression) {
 
             pdfChart.xGrid().enabled(true);
             pdfChart.yGrid().enabled(true);
-            // enable minor grids
-            //chart.xMinorGrid().enabled(true);
-            //chart.yMinorGrid().enabled(true);
-
-            //chart.xAxis().staggerMode(true);
-            //// adjusting settings for stagger mode
-            //chart.xAxis().staggerLines(2);
 
             pdfChart.yScale(anychart.scales.linear());
             pdfChart.xScale(anychart.scales.linear());
@@ -252,11 +214,6 @@ function EvaluateExpression(expression) {
     });
 }
 
-//function switchType() {
-//    var select = document.getElementById("typeSelect");
-//    series.seriesType(select.value);
-//}
-
 function AddCustomDistrToScreen(event) {
     var input = document.querySelector('.screen');
     input.innerHTML += event.target.innerHTML;
@@ -276,10 +233,6 @@ function UploadFile() {
     }
     // Проверяем, есть ли файлы с таким именем.
     var file = fileInput.prop('files')[0];
-    //// Валидируем имя файла и баланс. Т.е. проверяем, является ли имя файла уникальным и хватает ли денег.
-    //if (!ValidateFileNameAndBalance(file.name, file.size)) {
-    //    return;
-    //}
 
     var formData = new FormData();
     formData.append("FileUpload", file);
